@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TickedWebAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,10 @@ builder.Services.AddDbContext<tickedContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"));
 
 });
+
+//builder.Services.AddControllers()
+//            .AddJsonOptions(o => o.JsonSerializerOptions
+//                .ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 

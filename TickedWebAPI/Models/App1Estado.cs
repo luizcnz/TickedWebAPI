@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TickedWebAPI.Models
 {
@@ -10,6 +11,7 @@ namespace TickedWebAPI.Models
             App1Tickeds = new HashSet<App1Ticked>();
         }
 
+        
         public int Id { get; set; }
         public string Estado { get; set; } = null!;
 
