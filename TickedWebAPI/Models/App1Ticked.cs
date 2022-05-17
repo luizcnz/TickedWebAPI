@@ -68,4 +68,33 @@ namespace TickedWebAPI.Models
         public virtual ICollection<App1Detalleticked> App1Detalletickeds { get; set; }
         public virtual ICollection<App1Registrotransferencium> App1Registrotransferencia { get; set; }
     }
+
+    public partial class TickedGET
+    {
+
+        //public TickedDto()
+        //{
+        //    App1Detalletickeds = new HashSet<App1Detalleticked>();
+        //    App1Registrotransferencia = new HashSet<App1Registrotransferencium>();
+        //}
+        public int? Id { get; set; }
+        public string? Numero { get; set; }
+        public string? Descripcion { get; set; }
+        public string? Adjunto { get; set; }
+        public DateTime? Fechacreado { get; set; }
+        public DateTime? FechaAtendido { get; set; }
+        public DateTime? FechaCerrado { get; set; }
+        public string? Estado { get; set; }
+        public string? Prioridad { get; set; }
+        public string? Subcategoria { get; set; }
+        public string? Tecnico { get; set; }
+        public string? TipoAsistencia { get; set; }
+        public string? Tratamiento { get; set; }
+        public string? UsuarioSolicitante { get; set; }
+
+        //public virtual ICollection<App1Detalleticked> App1Detalletickeds { get; set; }
+        //public virtual ICollection<App1Registrotransferencium> App1Registrotransferencia { get; set; }
+
+
+    }
 }
