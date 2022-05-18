@@ -35,6 +35,7 @@ namespace TickedWebAPI.Models
         public virtual DbSet<App1Registrotransferencium> App1Registrotransferencia { get; set; } = null!;
         public virtual DbSet<App1Subcategoria> App1Subcategoria { get; set; } = null!;
         public virtual DbSet<App1Ticked> App1Tickeds { get; set; } = null!;
+        //public virtual DbSet<App1TickedPost> App1TickedsPost { get; set; } = null!;
         public virtual DbSet<App1Tipoasistencium> App1Tipoasistencia { get; set; } = null!;
         public virtual DbSet<App1Tipoespecificacion> App1Tipoespecificacions { get; set; } = null!;
         public virtual DbSet<App1Tratamiento> App1Tratamientos { get; set; } = null!;
@@ -549,6 +550,54 @@ namespace TickedWebAPI.Models
                     .HasForeignKey(d => d.UsuarioSolicitanteId)
                     .HasConstraintName("app1_ticked_usuarioSolicitante_id_163c0e6a_fk_app1_user_id");
             });
+
+            //modelBuilder.Entity<App1TickedPost>(entity =>
+            //{
+            //    entity.ToTable("app1_ticked");
+
+            //    entity.HasIndex(e => e.EstadoId, "app1_ticked_estado_id_42bd5756");
+
+            //    entity.HasIndex(e => e.PrioridadId, "app1_ticked_prioridad_id_71065ef3");
+
+            //    entity.HasIndex(e => e.SubcategoriaId, "app1_ticked_subcategoria_id_204ba677");
+
+            //    entity.HasIndex(e => e.TecnicoId, "app1_ticked_tecnico_id_799fd10e");
+
+            //    entity.HasIndex(e => e.TipoAsistenciaId, "app1_ticked_tipoAsistencia_id_51b2e779");
+
+            //    entity.HasIndex(e => e.TratamientoId, "app1_ticked_tratamiento_id_e4f2bf3d");
+
+            //    entity.HasIndex(e => e.UsuarioSolicitanteId, "app1_ticked_usuarioSolicitante_id_163c0e6a");
+
+            //    entity.Property(e => e.Id).HasColumnName("id");
+
+            //    entity.Property(e => e.Adjunto)
+            //        .HasMaxLength(100)
+            //        .HasColumnName("adjunto");
+
+            //    entity.Property(e => e.Descripcion).HasColumnName("descripcion");
+
+            //    entity.Property(e => e.EstadoId).HasColumnName("estado_id");
+
+            //    entity.Property(e => e.Fechacreado).HasColumnName("fechacreado");
+
+            //    entity.Property(e => e.Numero)
+            //        .HasMaxLength(100)
+            //        .HasColumnName("numero");
+
+            //    entity.Property(e => e.PrioridadId).HasColumnName("prioridad_id");
+
+            //    entity.Property(e => e.SubcategoriaId).HasColumnName("subcategoria_id");
+
+            //    entity.Property(e => e.TecnicoId).HasColumnName("tecnico_id");
+
+            //    entity.Property(e => e.TipoAsistenciaId).HasColumnName("tipoAsistencia_id");
+
+            //    entity.Property(e => e.TratamientoId).HasColumnName("tratamiento_id");
+
+            //    entity.Property(e => e.UsuarioSolicitanteId).HasColumnName("usuarioSolicitante_id");
+
+            //});
 
             modelBuilder.Entity<App1Tipoasistencium>(entity =>
             {
