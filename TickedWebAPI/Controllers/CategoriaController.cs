@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using TickedWebAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,9 +21,44 @@ namespace TickedWebAPI.Controllers
 
         // GET: api/<CategoriaController>
         [HttpGet]
-        public IEnumerable<App1Categoria> Get()
+        public List<App1Categoria> GetList()
         {
-            return context.App1Categoria.ToList();
+
+            SqlConnection connString = new SqlConnection();
+
+            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+
+            connString.Open();
+
+            string procedureName = "[obtenerCategorias]";
+            var result = new List<App1Categoria>();
+            using (SqlCommand command = new SqlCommand(procedureName,
+            connString))
+            {
+                command.CommandType = CommandType.StoredProcedure;
+
+                using (SqlDataReader? reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int id = reader.GetIntOrNull(0);
+                        string? categoria = reader.GetStringOrNull(1);
+                        bool? estadocat = reader.GetBoolOrNull(2);
+                        
+
+                        App1Categoria tmpRecord = new App1Categoria()
+                        {
+                            Id = id,
+                            Categoria = categoria,
+                            EstadoCat = estadocat,
+                            
+
+                        };
+                        result.Add(tmpRecord);
+                    }
+                }
+            }
+            return result;
         }
 
         // GET api/<CategoriaController>/5
