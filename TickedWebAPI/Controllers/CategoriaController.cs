@@ -19,6 +19,15 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
+        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+
+        public static IConfigurationRoot configuration = builder.Build();
+
+        public string conn = configuration.GetConnectionString("ConnectionString");
+
+
+
+        #region obtencion de categorias
         // GET: api/<CategoriaController>
         [HttpGet]
         public List<App1Categoria> GetList()
@@ -26,7 +35,7 @@ namespace TickedWebAPI.Controllers
 
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+            connString.ConnectionString = conn;
 
             connString.Open();
 
@@ -67,6 +76,6 @@ namespace TickedWebAPI.Controllers
         {
             return "value";
         }
-
+        #endregion
     }
 }

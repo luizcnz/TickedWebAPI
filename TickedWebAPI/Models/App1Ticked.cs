@@ -9,12 +9,6 @@ namespace TickedWebAPI.Models
 {
     public partial class App1Ticked
     {
-        public App1Ticked()
-        {
-            App1Detalletickeds = new HashSet<App1Detalleticked>();
-            App1Registrotransferencia = new HashSet<App1Registrotransferencium>();
-        }
-
         
         public int Id { get; set; }
         public string? Numero { get; set; }
@@ -38,19 +32,7 @@ namespace TickedWebAPI.Models
         public int? TratamientoId { get; set; }
         public int? UsuarioSolicitanteId { get; set; }
 
-        
-        public virtual App1User? Apoyo { get; set; }
-        public virtual App1Estado? Estado { get; set; }
-        public virtual App1Nivelimpacto? NivelImpacto { get; set; }
-        public virtual App1Prioridad? Prioridad { get; set; }
-        public virtual App1User? Propietario { get; set; }
         public virtual App1Subcategoria? Subcategoria { get; set; }
-        public virtual App1User? Tecnico { get; set; }
-        public virtual App1Tipoasistencium? TipoAsistencia { get; set; }
-        public virtual App1Tratamiento? Tratamiento { get; set; }
-        public virtual App1User? UsuarioSolicitante { get; set; }
-        public virtual ICollection<App1Detalleticked> App1Detalletickeds { get; set; }
-        public virtual ICollection<App1Registrotransferencium> App1Registrotransferencia { get; set; }
     }
 
     public partial class TickedGET

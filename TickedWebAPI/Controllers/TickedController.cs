@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
 using TickedWebAPI.Models;
-
-
 using System.Data;
-using System.Threading.Tasks;
-using System.Text;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.EntityFrameworkCore;
 
 namespace TickedWebAPI.Controllers
 {
@@ -25,6 +18,15 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
+
+        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+
+        public static IConfigurationRoot configuration = builder.Build();
+
+        public string conn = configuration.GetConnectionString("ConnectionString");
+
+
+
         #region obtener tickeds sin llaves foraneas
         // GET: api/<TickedController>
         //[HttpGet]
@@ -33,7 +35,7 @@ namespace TickedWebAPI.Controllers
 
         //    SqlConnection connString = new SqlConnection();
 
-        //    connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+        //    connString.ConnectionString = conn;
 
         //    connString.Open();
 
@@ -93,10 +95,8 @@ namespace TickedWebAPI.Controllers
         [HttpGet]
         public List<TickedGETJoin> GetList()
         {
-
             SqlConnection connString = new SqlConnection();
-
-            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+            connString.ConnectionString = conn;
 
             connString.Open();
 
@@ -157,7 +157,7 @@ namespace TickedWebAPI.Controllers
         //public ActionResult Post([FromBody]App1TickedPost ticked)
         //{
 
-        //    string connString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+        //    string connString = conn;
 
         //    int Estado, Prioridad, Subcategoria, Tecnico, TipoAsistencia, Tratamiento, UsuarioSolicitante;
         //    DateTime Fechacreado, FechaAtendido, FechaCerrado;
@@ -202,7 +202,7 @@ namespace TickedWebAPI.Controllers
         //            SqlDataReader dr = cmd.ExecuteReader();
 
         //            Console.WriteLine(Environment.NewLine + "Iniciando insercion de datos..." + Environment.NewLine);
-                    
+
 
         //            //close data reader
         //            dr.Close();
@@ -226,7 +226,7 @@ namespace TickedWebAPI.Controllers
         {
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+            connString.ConnectionString = conn;
 
             connString.Open();
 

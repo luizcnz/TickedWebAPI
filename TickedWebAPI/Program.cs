@@ -11,13 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connString = builder.Configuration.GetConnectionString("ConnectionString");
+//string connString = builder.Configuration.GetConnectionString("ConnectionString");
 
 builder.Services.AddDbContext<tickedContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"));
 
 });
+
 
 //builder.Services.AddControllers()
 //            .AddJsonOptions(o => o.JsonSerializerOptions

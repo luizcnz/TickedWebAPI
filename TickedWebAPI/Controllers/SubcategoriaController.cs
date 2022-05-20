@@ -18,6 +18,12 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
+        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+
+        public static IConfigurationRoot configuration = builder.Build();
+
+        public string conn = configuration.GetConnectionString("ConnectionString");
+
         #region get de categorias sin filtro
         // GET: api/<SubcategoriaController>
         //[HttpGet]
@@ -26,7 +32,7 @@ namespace TickedWebAPI.Controllers
 
         //    SqlConnection connString = new SqlConnection();
 
-        //    connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+        //    connString.ConnectionString = conn;
 
         //    connString.Open();
 
@@ -71,7 +77,7 @@ namespace TickedWebAPI.Controllers
 
         //    SqlConnection connString = new SqlConnection();
 
-        //    connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+        //    connString.ConnectionString = conn;
 
         //    connString.Open();
 
@@ -111,7 +117,7 @@ namespace TickedWebAPI.Controllers
         #endregion
 
 
-        #region get de categorias sin filtro con Join
+        #region get de categorias sin filtro con llaves foraneas
         // GET: api/<SubcategoriaController>
         [HttpGet]
         public List<App1SubcategoriaJoin> GetList()
@@ -119,7 +125,7 @@ namespace TickedWebAPI.Controllers
 
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+            connString.ConnectionString = conn;
 
             connString.Open();
 
@@ -157,14 +163,14 @@ namespace TickedWebAPI.Controllers
         }
         #endregion
 
-        #region get de subcategorias segun id de categoria
+        #region get de subcategorias segun id de categoria con llave foranea
         [HttpGet("{CatId}")]
         public List<App1SubcategoriaJoin> Get(int CatId)
         {
 
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = @"Server =localhost; Database = ticked; Trusted_Connection = True;";
+            connString.ConnectionString = conn;
 
             connString.Open();
 
