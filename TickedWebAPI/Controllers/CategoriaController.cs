@@ -30,7 +30,10 @@ namespace TickedWebAPI.Controllers
         #region obtencion de categorias
         // GET: api/<CategoriaController>
         [HttpGet]
-        public List<App1Categoria> GetList()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Categoria))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get()
         {
 
             SqlConnection connString = new SqlConnection();
@@ -41,40 +44,50 @@ namespace TickedWebAPI.Controllers
 
             string procedureName = "[obtenerCategorias]";
             var result = new List<App1Categoria>();
-            using (SqlCommand command = new SqlCommand(procedureName,
-            connString))
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-
-                using (SqlDataReader? reader = command.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(procedureName,
+                connString))
                 {
-                    while (reader.Read())
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        int id = reader.GetIntOrNull(0);
-                        string? categoria = reader.GetStringOrNull(1);
-                        bool? estadocat = reader.GetBoolOrNull(2);
-                        
-
-                        App1Categoria tmpRecord = new App1Categoria()
+                        if(reader.HasRows)
                         {
-                            Id = id,
-                            Categoria = categoria,
-                            EstadoCat = estadocat,
-                            
+                            while (reader.Read())
+                            {
+                                int id = reader.GetIntOrNull(0);
+                                string? categoria = reader.GetStringOrNull(1);
+                                bool? estadocat = reader.GetBoolOrNull(2);
 
-                        };
-                        result.Add(tmpRecord);
+
+                                App1Categoria tmpRecord = new App1Categoria()
+                                {
+                                    Id = id,
+                                    Categoria = categoria,
+                                    EstadoCat = estadocat,
+
+
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new NotFoundObjectResult(result);
+                        }
                     }
                 }
             }
-            return result;
-        }
-
-        // GET api/<CategoriaController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            catch(Exception ex)
+            {
+                connString.Close();
+                return new StatusCodeResult(500);
+            }
         }
         #endregion
     }

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using TickedWebAPI.Models;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace TickedWebAPI.Controllers
 {
@@ -26,74 +27,13 @@ namespace TickedWebAPI.Controllers
         public string conn = configuration.GetConnectionString("ConnectionString");
 
 
-
-        #region obtener tickeds sin llaves foraneas
-        // GET: api/<TickedController>
-        //[HttpGet]
-        //public List<TickedGET> GetList()
-        //{
-
-        //    SqlConnection connString = new SqlConnection();
-
-        //    connString.ConnectionString = conn;
-
-        //    connString.Open();
-
-        //    string procedureName = "[obtenerTickeds]";
-        //    var result = new List<TickedGET>();
-        //    using (SqlCommand command = new SqlCommand(procedureName,
-        //    connString))
-        //    {
-        //        command.CommandType = CommandType.StoredProcedure;
-        //        //command.Parameters.Add(new SqlParameter("@estado", 4));
-
-        //        using (SqlDataReader? reader = command.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                int? id = reader.GetIntOrNull(0);
-        //                string? numero = reader.GetStringOrNull(1);
-        //                string? descripcion = reader.GetStringOrNull(2);
-        //                string? adjunto = reader.GetStringOrNull(3);
-        //                DateTime? fechacreado = reader.GetDateOrNull(4);
-        //                DateTime? fechaAtendido = reader.GetDateOrNull(5);
-        //                int? estadoread = reader.GetIntOrNull(6);
-        //                int? prioridad = reader.GetIntOrNull(7);
-        //                int? subcategoria = reader.GetIntOrNull(7);
-        //                int? tecnico = reader.GetIntOrNull(9);
-        //                int? tipoAsistencia = reader.GetIntOrNull(10);
-        //                int? tratamiento = reader.GetIntOrNull(11);
-        //                int? usuarioSolicitante = reader.GetIntOrNull(12);
-
-        //                TickedGET tmpRecord = new TickedGET()
-        //                {
-        //                    Id = id,
-        //                    Numero = numero,
-        //                    Descripcion = descripcion,
-        //                    Adjunto = adjunto,
-        //                    Fechacreado = fechacreado,
-        //                    FechaAtendido = fechaAtendido,
-        //                    Estado = estadoread,
-        //                    Prioridad = prioridad,
-        //                    Subcategoria = subcategoria,
-        //                    Tecnico = tecnico,
-        //                    TipoAsistencia = tipoAsistencia,
-        //                    Tratamiento = tratamiento,
-        //                    UsuarioSolicitante = usuarioSolicitante
-
-        //            };
-        //            result.Add(tmpRecord);
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-        #endregion
-
         #region obtener tickeds con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet]
-        public List<TickedGETJoin> GetList()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetList()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = conn;
@@ -101,128 +41,147 @@ namespace TickedWebAPI.Controllers
             connString.Open();
 
             string procedureName = "[getTickeds]";
-            var result = new List<TickedGETJoin>();
-            using (SqlCommand command = new SqlCommand(procedureName,
-            connString))
+            var result = new List<App1Ticked>();
+
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-                //command.Parameters.Add(new SqlParameter("@estado", 4));
-
-                using (SqlDataReader? reader = command.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(procedureName,
+            connString))
                 {
-                    while (reader.Read())
+                    command.CommandType = CommandType.StoredProcedure;
+                    //command.Parameters.Add(new SqlParameter("@estado", 4));
+
+                    using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        int? id = reader.GetIntOrNull(0);
-                        string? numero = reader.GetStringOrNull(1);
-                        string? descripcion = reader.GetStringOrNull(2);
-                        string? adjunto = reader.GetStringOrNull(3);
-                        DateTime? fechacreado = reader.GetDateOrNull(4);
-                        DateTime? fechaAtendido = reader.GetDateOrNull(5);
-                        string? estadoread = reader.GetStringOrNull(6);
-                        string? prioridad = reader.GetStringOrNull(7);
-                        string? subcategoria = reader.GetStringOrNull(7);
-                        string? tecnico = reader.GetStringOrNull(9);
-                        string? tipoAsistencia = reader.GetStringOrNull(10);
-                        string? tratamiento = reader.GetStringOrNull(11);
-                        string? usuarioSolicitante = reader.GetStringOrNull(12);
-
-                        TickedGETJoin tmpRecord = new TickedGETJoin()
+                        if(reader.HasRows)
                         {
-                            Id = id,
-                            Numero = numero,
-                            Descripcion = descripcion,
-                            Adjunto = adjunto,
-                            Fechacreado = fechacreado,
-                            FechaAtendido = fechaAtendido,
-                            Estado = estadoread,
-                            Prioridad = prioridad,
-                            Subcategoria = subcategoria,
-                            Tecnico = tecnico,
-                            TipoAsistencia = tipoAsistencia,
-                            Tratamiento = tratamiento,
-                            UsuarioSolicitante = usuarioSolicitante
+                            while (reader.Read())
+                            {
+                                string? numero = reader.GetStringOrNull(1);
+                                string? descripcion = reader.GetStringOrNull(2);
+                                string? adjunto = reader.GetStringOrNull(3);
+                                DateTime? fechacreado = reader.GetDateOrNull(4);
+                                string? estadoread = reader.GetStringOrNull(5);
+                                string? prioridad = reader.GetStringOrNull(6);
+                                string? subcategoria = reader.GetStringOrNull(7);
+                                string? usuarioSolicitante = reader.GetStringOrNull(8);
 
-                        };
-                        result.Add(tmpRecord);
+                                App1Ticked tmpRecord = new App1Ticked()
+                                {
+                                    Numero = numero,
+                                    Descripcion = descripcion,
+                                    Adjunto = adjunto,
+                                    Fechacreado = fechacreado,
+                                    Estado = estadoread,
+                                    Prioridad = prioridad,
+                                    Subcategoria = subcategoria,
+                                    UsuarioSolicitante = usuarioSolicitante
+
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new NotFoundObjectResult(result);
+                        }
                     }
                 }
             }
-            return result;
+            catch (Exception ex)
+            {
+                connString.Close();
+                return new StatusCodeResult(500);
+            }
+            
+            
         }
         #endregion
 
-        #region metodo post procedimiento almacenado en codigo
-        // POST api/<TickedController>
-        //[HttpPost]
-        //public ActionResult Post([FromBody]App1TickedPost ticked)
-        //{
+         #region obtener tickeds por id de ticked con llaves foraneas
+        // GET: api/<TickedController>
+        [HttpGet("/tickedid/{TkId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get(int TkId)
+        {
+            SqlConnection connString = new SqlConnection();
+            connString.ConnectionString = conn;
 
-        //    string connString = conn;
+            connString.Open();
 
-        //    int Estado, Prioridad, Subcategoria, Tecnico, TipoAsistencia, Tratamiento, UsuarioSolicitante;
-        //    DateTime Fechacreado, FechaAtendido, FechaCerrado;
-        //    string Adjunto, Descripcion, Numero;
+            string procedureName = "[getTickedsById]";
+            
+            var result = new List<App1Ticked>();
+            try
+            {
+                using (SqlCommand command = new SqlCommand(procedureName,
+                connString))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@ID", TkId));
 
-        //    Numero = ticked.Numero;
-        //    Descripcion = ticked.Descripcion;
-        //    Adjunto = ticked.Adjunto;
-        //    Fechacreado = (DateTime)ticked.Fechacreado;
-        //    Estado = (int)ticked.EstadoId;
-        //    Prioridad = (int)ticked.PrioridadId;
-        //    Subcategoria = (int)ticked.SubcategoriaId;
-        //    Tecnico = (int)ticked.TecnicoId;
-        //    TipoAsistencia = (int)ticked.TipoAsistenciaId;
-        //    Tratamiento = (int)ticked.TratamientoId;
-        //    UsuarioSolicitante = (int)ticked.UsuarioSolicitanteId;
+                    using (SqlDataReader? reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                string? numero = reader.GetStringOrNull(0);
+                                string? descripcion = reader.GetStringOrNull(1);
+                                string? adjunto = reader.GetStringOrNull(2);
+                                DateTime? fechacreado = reader.GetDateOrNull(3);
+                                string? estadoread = reader.GetStringOrNull(4);
+                                string? prioridad = reader.GetStringOrNull(5);
+                                string? subcategoria = reader.GetStringOrNull(6);
+                                string? usuarioSolicitante = reader.GetStringOrNull(7);
 
+                                App1Ticked tmpRecord = new App1Ticked()
+                                {
+                                    Numero = numero,
+                                    Descripcion = descripcion,
+                                    Adjunto = adjunto,
+                                    Fechacreado = fechacreado,
+                                    Estado = estadoread,
+                                    Prioridad = prioridad,
+                                    Subcategoria = subcategoria,
+                                    UsuarioSolicitante = usuarioSolicitante
 
-
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connString))
-        //        {
-
-        //            string query = @"INSERT into app1_ticked (
-        //                            numero
-        //                            ,descripcion
-        //                            ,adjunto
-        //                            ,fechacreado
-        //                            ,estado_id
-        //                            ,prioridad_id
-        //                            ,subcategoria_id
-        //                            ,tecnico_id
-        //                            ,tipoAsistencia_id
-        //                            ,tratamiento_id
-        //                            ,usuarioSolicitante_id) VALUES ('" + Numero+ "','" + Descripcion+ "','" +Adjunto+ "','" + Fechacreado+ "'," + Estado+ ","+Prioridad+ ","+Subcategoria+ ","+Tecnico+ ","+TipoAsistencia+ ","+Tratamiento+ ","+UsuarioSolicitante+ ");" ;
-
-        //            SqlCommand cmd = new SqlCommand(query, conn);
-
-        //            conn.Open();
-
-        //            SqlDataReader dr = cmd.ExecuteReader();
-
-        //            Console.WriteLine(Environment.NewLine + "Iniciando insercion de datos..." + Environment.NewLine);
-
-
-        //            //close data reader
-        //            dr.Close();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Exception: " + ex.Message);
-        //        return null;
-        //    }
-
-        //    return Ok();
-
-        //}
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                            //var response = new HttpResponseMessage();
+                            //response.Content = new StringContent();
+                            //return Request.CreateResponse<Employee>(HttpStatusCode.OK, emp);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new NotFoundObjectResult(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                connString.Close();
+                return new StatusCodeResult(500);
+            }
+        }
         #endregion
 
         #region metodo post procedimiento almacenado en base de datos
         // POST api/<TickedController>
         [HttpPost]
-        public ActionResult Post([FromBody] App1TickedPost ticked)
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(App1TickedPost))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Post([FromBody] App1TickedPost ticked)
         {
             SqlConnection connString = new SqlConnection();
 
@@ -231,55 +190,50 @@ namespace TickedWebAPI.Controllers
             connString.Open();
 
             string procedureName = "[postTicked]";
-            
-            //int Estado, Prioridad, Subcategoria, Tecnico, TipoAsistencia, Tratamiento, UsuarioSolicitante;
-            //DateTime Fechacreado, FechaAtendido, FechaCerrado;
-            //string Adjunto, Descripcion, Numero;
 
-            string? Numero = ticked.Numero;
             string? Descripcion = ticked.Descripcion;
             string? Adjunto = ticked.Adjunto;
-            DateTime Fechacreado = (DateTime)ticked.Fechacreado;
-            int? Estado = (int)ticked.EstadoId;
-            int? Prioridad = (int)ticked.PrioridadId;
-            int? Subcategoria = (int)ticked.SubcategoriaId;
-            int? Tecnico = (int)ticked.TecnicoId;
-            int? TipoAsistencia = (int)ticked.TipoAsistenciaId;
-            int? Tratamiento = (int)ticked.TratamientoId;
-            int? UsuarioSolicitante = (int)ticked.UsuarioSolicitanteId;
+            DateTime? Fechacreado = ticked.Fechacreado;
+            int? Estado = ticked.EstadoId;
+            int? Prioridad = ticked.PrioridadId;
+            int? Subcategoria = ticked.SubcategoriaId;
+            int? UsuarioSolicitante = ticked.UsuarioSolicitanteId;
 
 
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-                connString))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.Add(new SqlParameter("@Numero", Numero));
-                    command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
-                    command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
-                    command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
-                    command.Parameters.Add(new SqlParameter("@Estado", Estado));
-                    command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
-                    command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
-                    command.Parameters.Add(new SqlParameter("@Tecnico", Tecnico));
-                    command.Parameters.Add(new SqlParameter("@TipoAsistencia", TipoAsistencia));
-                    command.Parameters.Add(new SqlParameter("@Tratamiento", Tratamiento));
-                    command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
+                SqlCommand command = new SqlCommand(procedureName,
+                connString);
+                
+                command.CommandType = CommandType.StoredProcedure;
+                //command.Parameters.Add(new SqlParameter("@Numero", Numero));
+                command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
+                command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
+                command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
+                command.Parameters.Add(new SqlParameter("@Estado", 1));
+                command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
+                command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
+                //command.Parameters.Add(new SqlParameter("@Tratamiento", Tratamiento));
+                command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
 
-                    using (SqlDataReader? reader = command.ExecuteReader())
-                    connString.Close();
-                    return Ok();
-                }
+                //using (SqlDataReader? reader = command.ExecuteReader())
+
+                int id = (int)command.ExecuteScalar();
+
+                string uri = "http://localhost:63877/tickedid/" + id+"";
+                connString.Close();
+
+                return Created(uri, ticked);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Exception: " + ex.Message);
                 connString.Close();
-                return null;
-            }
+                //var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                //return response;
+                return new StatusCodeResult(500);
 
-            return Ok();
+            }
 
         }
         #endregion
