@@ -12,7 +12,7 @@ namespace TickedWebAPI.Controllers
     public class TickedController : ControllerBase
     {
         private readonly tickedContext context;
-        
+
 
         public TickedController(tickedContext context)
         {
@@ -33,14 +33,18 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetAllTickeds()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = conn;
-
             connString.Open();
 
+            SqlConnection connString2 = new SqlConnection();
+            connString2.ConnectionString = conn;
+            connString2.Open();
+
             string procedureName = "[getTickeds]";
+            string procedureName2 = "[getDetalles]";
             var result = new List<App1Ticked>();
 
             try
@@ -53,18 +57,84 @@ namespace TickedWebAPI.Controllers
 
                     using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        if(reader.HasRows)
+                        if (reader.HasRows)
                         {
                             while (reader.Read())
                             {
-                                string? numero = reader.GetStringOrNull(1);
+                                int id = reader.GetInt32(0);
+                                string? numero;
+                                if (reader.IsDBNull(1))
+                                {
+                                    numero = "Numero Pendiente";
+                                }
+                                else
+                                {
+                                    numero = reader.GetString(1);
+                                }
                                 string? descripcion = reader.GetStringOrNull(2);
                                 string? adjunto = reader.GetStringOrNull(3);
-                                DateTime? fechacreado = reader.GetDateOrNull(4);
-                                string? estadoread = reader.GetStringOrNull(5);
-                                string? prioridad = reader.GetStringOrNull(6);
-                                string? subcategoria = reader.GetStringOrNull(7);
-                                string? usuarioSolicitante = reader.GetStringOrNull(8);
+                                string? fechacreado;
+                                if (reader.IsDBNull(4))
+                                {
+                                    fechacreado = "Fecha Pendiente";
+                                }
+                                else
+                                {
+                                    fechacreado = Convert.ToString(reader.GetDateTime(4));
+                                }
+                                string? fechaatendido;
+                                if (reader.IsDBNull(5))
+                                {
+                                    fechaatendido = "Pendiente";
+                                }
+                                else
+                                {
+                                    fechaatendido = Convert.ToString(reader.GetDateTime(5));
+                                }
+                                string? estadoread = reader.GetStringOrNull(6);
+                                string? prioridad = reader.GetStringOrNull(7);
+                                string? subcategoria = reader.GetStringOrNull(8);
+                                string? usuarioSolicitante = reader.GetStringOrNull(9);
+                                var detalles = new List<App1DetalleTicked>();
+                                // Inicio del codigo para obtener los detalles del ticked
+                                try
+                                {
+                                    using (SqlCommand command2 = new SqlCommand(procedureName2,
+                                    connString2))
+                                    {
+                                        command2.CommandType = CommandType.StoredProcedure;
+                                        command2.Parameters.Add(new SqlParameter("@NumId", id));
+                                        using (SqlDataReader? reader2 = command2.ExecuteReader())
+                                        {
+                                            if (reader2.HasRows)
+                                            {
+                                                while (reader2.Read())
+                                                {
+                                                    DateTime detalleFecha = reader2.GetDateTime(0);
+                                                    string detalleComentario = reader2.GetString(1);
+                                                    string detalleUsuario = reader2.GetString(2);
+                                                    string detalleAdjunto = reader2.GetString(3);
+
+                                                    App1DetalleTicked tmp = new App1DetalleTicked()
+                                                    {
+                                                        Fecha = detalleFecha,
+                                                        Comentario = detalleComentario,
+                                                        Usuario = detalleUsuario,
+                                                        Adjunto = detalleAdjunto
+                                                    };
+                                                    detalles.Add(tmp);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    connString.Close();
+                                    connString2.Close();
+                                    Console.Write("Se han encontrado los siguientes errores mientras se obtenian lo detalles: " + ex + "");
+                                    return new StatusCodeResult(500);
+                                }
 
                                 App1Ticked tmpRecord = new App1Ticked()
                                 {
@@ -72,21 +142,25 @@ namespace TickedWebAPI.Controllers
                                     Descripcion = descripcion,
                                     Adjunto = adjunto,
                                     Fechacreado = fechacreado,
+                                    Fechaatendido = fechaatendido,
                                     Estado = estadoread,
                                     Prioridad = prioridad,
                                     Subcategoria = subcategoria,
-                                    UsuarioSolicitante = usuarioSolicitante
+                                    UsuarioSolicitante = usuarioSolicitante,
+                                    Detalles = detalles
 
                                 };
                                 result.Add(tmpRecord);
                             }
                             connString.Close();
+                            connString2.Close();
                             return new OkObjectResult(result);
                         }
                         else
                         {
                             connString.Close();
-                            return new NotFoundObjectResult(result);
+                            connString2.Close();
+                            return new StatusCodeResult(404);
                         }
                     }
                 }
@@ -94,20 +168,22 @@ namespace TickedWebAPI.Controllers
             catch (Exception ex)
             {
                 connString.Close();
+                Console.Write("Se han encontrado los siguientes errores mientras se obtenian lo detalles: " + ex + "");
                 return new StatusCodeResult(500);
             }
-            
-            
+
+
         }
         #endregion
 
-         #region obtener tickeds por id de ticked con llaves foraneas
+
+        #region obtener tickeds por id de ticked con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet("/tickedid/{TkId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get(int TkId)
+        public async Task<IActionResult> GetTicked(int TkId)
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = conn;
@@ -115,7 +191,7 @@ namespace TickedWebAPI.Controllers
             connString.Open();
 
             string procedureName = "[getTickedsById]";
-            
+
             var result = new List<App1Ticked>();
             try
             {
@@ -131,14 +207,39 @@ namespace TickedWebAPI.Controllers
                         {
                             while (reader.Read())
                             {
-                                string? numero = reader.GetStringOrNull(0);
+                                string? numero;
+                                if (reader.IsDBNull(0))
+                                {
+                                    numero = "Numero Pendiente";
+                                }
+                                else
+                                {
+                                    numero = reader.GetString(0);
+                                }
                                 string? descripcion = reader.GetStringOrNull(1);
                                 string? adjunto = reader.GetStringOrNull(2);
-                                DateTime? fechacreado = reader.GetDateOrNull(3);
-                                string? estadoread = reader.GetStringOrNull(4);
-                                string? prioridad = reader.GetStringOrNull(5);
-                                string? subcategoria = reader.GetStringOrNull(6);
-                                string? usuarioSolicitante = reader.GetStringOrNull(7);
+                                string? fechacreado;
+                                if (reader.IsDBNull(3))
+                                {
+                                    fechacreado = "Fecha Pendiente";
+                                }
+                                else
+                                {
+                                    fechacreado = Convert.ToString(reader.GetDateTime(3));
+                                }
+                                string? fechaatendido;
+                                if (reader.IsDBNull(4))
+                                {
+                                    fechaatendido = "Fecha Pendiente";
+                                }
+                                else
+                                {
+                                    fechaatendido = Convert.ToString(reader.GetDateTime(4));
+                                }
+                                string? estadoread = reader.GetStringOrNull(5);
+                                string? prioridad = reader.GetStringOrNull(6);
+                                string? subcategoria = reader.GetStringOrNull(7);
+                                string? usuarioSolicitante = reader.GetStringOrNull(8);
 
                                 App1Ticked tmpRecord = new App1Ticked()
                                 {
@@ -146,6 +247,7 @@ namespace TickedWebAPI.Controllers
                                     Descripcion = descripcion,
                                     Adjunto = adjunto,
                                     Fechacreado = fechacreado,
+                                    Fechaatendido = fechaatendido,
                                     Estado = estadoread,
                                     Prioridad = prioridad,
                                     Subcategoria = subcategoria,
@@ -163,7 +265,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new NotFoundObjectResult(result);
+                            return new StatusCodeResult(404);
                         }
                     }
                 }
@@ -171,10 +273,159 @@ namespace TickedWebAPI.Controllers
             catch (Exception ex)
             {
                 connString.Close();
+                Console.Write("Se ha capturado el siguiente error: " + ex + "");
                 return new StatusCodeResult(500);
             }
         }
         #endregion
+
+
+        #region obtener tickeds por solicitante del ticked con llaves foraneas
+        // GET: api/<TickedController>
+        [HttpGet("/user/{UserId}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserTickeds(int UserId)
+        {
+            SqlConnection connString = new SqlConnection();
+            connString.ConnectionString = conn;
+            connString.Open();
+
+            SqlConnection connString2 = new SqlConnection();
+            connString2.ConnectionString = conn;
+            connString2.Open();
+
+            string procedureName = "[getTickedsByUserId]";
+            string procedureName2 = "[getDetalles]";
+
+            var result = new List<App1Ticked>();
+            try
+            {
+                using (SqlCommand command = new SqlCommand(procedureName,
+                connString))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@UserId", UserId));
+
+                    using (SqlDataReader? reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                int id = reader.GetInt32(0);
+                                string? numero;
+                                if (reader.IsDBNull(1))
+                                {
+                                    numero = "Numero Pendiente";
+                                }
+                                else
+                                {
+                                    numero = reader.GetString(1);
+                                }
+                                string? descripcion = reader.GetStringOrNull(2);
+                                string? adjunto = reader.GetStringOrNull(3);
+                                string? fechacreado;
+                                if (reader.IsDBNull(4))
+                                {
+                                    fechacreado = "Fecha Pendiente";
+                                }
+                                else
+                                {
+                                    fechacreado = Convert.ToString(reader.GetDateTime(4));
+                                }
+                                string? fechaatendido;
+                                if (reader.IsDBNull(5))
+                                {
+                                    fechaatendido = "Pendiente";
+                                }
+                                else
+                                {
+                                    fechaatendido = Convert.ToString(reader.GetDateTime(5));
+                                }
+                                string? estadoread = reader.GetStringOrNull(6);
+                                string? prioridad = reader.GetStringOrNull(7);
+                                string? subcategoria = reader.GetStringOrNull(8);
+                                string? usuarioSolicitante = reader.GetStringOrNull(9);
+                                var detalles = new List<App1DetalleTicked>();
+
+                                // Inicio del codigo para obtener los detalles del ticked
+                                try
+                                {
+                                    using (SqlCommand command2 = new SqlCommand(procedureName2,
+                                    connString2))
+                                    {
+                                        command2.CommandType = CommandType.StoredProcedure;
+                                        command2.Parameters.Add(new SqlParameter("@NumId", id));
+                                        using (SqlDataReader? reader2 = command2.ExecuteReader())
+                                        {
+                                            if (reader2.HasRows)
+                                            {
+                                                while (reader2.Read())
+                                                {
+                                                    DateTime detalleFecha = reader2.GetDateTime(0);
+                                                    string detalleComentario = reader2.GetString(1);
+                                                    string detalleUsuario = reader2.GetString(2);
+                                                    string detalleAdjunto = reader2.GetString(3);
+
+                                                    App1DetalleTicked tmp = new App1DetalleTicked()
+                                                    {
+                                                        Fecha = detalleFecha,
+                                                        Comentario = detalleComentario,
+                                                        Usuario = detalleUsuario,
+                                                        Adjunto = detalleAdjunto
+                                                    };
+                                                    detalles.Add(tmp);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    connString.Close();
+                                    connString2.Close();
+                                    Console.Write("Se han encontrado los siguientes errores mientras se obtenian lo detalles: " + ex + "");
+                                    return new StatusCodeResult(500);
+                                }
+
+
+                                App1Ticked tmpRecord = new App1Ticked()
+                                {
+                                    Numero = numero,
+                                    Descripcion = descripcion,
+                                    Adjunto = adjunto,
+                                    Fechacreado = fechacreado,
+                                    Fechaatendido = fechaatendido,
+                                    Estado = estadoread,
+                                    Prioridad = prioridad,
+                                    Subcategoria = subcategoria,
+                                    UsuarioSolicitante = usuarioSolicitante,
+                                    Detalles = detalles
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new StatusCodeResult(404);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                connString.Close();
+                Console.Write("Se ha capturado el siguiente error: " + ex + "");
+                return new StatusCodeResult(500);
+            }
+        }
+        #endregion
+
 
         #region metodo post procedimiento almacenado en base de datos
         // POST api/<TickedController>
@@ -204,7 +455,7 @@ namespace TickedWebAPI.Controllers
             {
                 SqlCommand command = new SqlCommand(procedureName,
                 connString);
-                
+
                 command.CommandType = CommandType.StoredProcedure;
                 //command.Parameters.Add(new SqlParameter("@Numero", Numero));
                 command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
@@ -220,7 +471,7 @@ namespace TickedWebAPI.Controllers
 
                 int id = (int)command.ExecuteScalar();
 
-                string uri = "http://localhost:63877/tickedid/" + id+"";
+                string uri = "http://localhost:63877/tickedid/" + id + "";
                 connString.Close();
 
                 return Created(uri, ticked);
@@ -238,6 +489,5 @@ namespace TickedWebAPI.Controllers
         }
         #endregion
     }
-
 }
 

@@ -12,11 +12,13 @@ namespace TickedWebAPI.Models
         public string? Numero { get; set; }
         public string? Descripcion { get; set; }
         public string? Adjunto { get; set; }
-        public DateTime? Fechacreado { get; set; }
+        public string? Fechacreado { get; set; }
+        public string? Fechaatendido { get; set; }
         public string? Estado { get; set; }
         public string? Prioridad { get; set; }
         public string? Subcategoria { get; set; }
         public string? UsuarioSolicitante { get; set; }
+        public virtual ICollection<App1DetalleTicked> Detalles { get; set; }
     }
 
     public class App1TickedPost
@@ -37,6 +39,8 @@ namespace TickedWebAPI.Models
         [Required(ErrorMessage = "Se debe ingresar un estado")]
         public int? EstadoId { get; set; }
 
+        [RegularExpression(@"^[1-3''-'\s]{1,1}$",
+         ErrorMessage = "Characters are not allowed.")]
         [Required(ErrorMessage = "Se debe ingresar un nivel de prioridad")]
         public int? PrioridadId { get; set; }
 

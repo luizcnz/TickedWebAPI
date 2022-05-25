@@ -9,66 +9,53 @@ namespace TickedWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class PrioridadController : ControllerBase
     {
-
         private readonly tickedContext context;
-
-        public CategoriaController(tickedContext context)
+        public PrioridadController(tickedContext context)
         {
             this.context = context;
         }
 
         static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
         public static IConfigurationRoot configuration = builder.Build();
-
         public string conn = configuration.GetConnectionString("ConnectionString");
 
-
-
-        #region obtencion de categorias
-        // GET: api/<CategoriaController>
+        #region obtener Prioridades
+        // GET: api/<PrioridadController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Categoria))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Prioridad))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-
             SqlConnection connString = new SqlConnection();
-
             connString.ConnectionString = conn;
-
             connString.Open();
 
-            string procedureName = "[obtenerCategorias]";
-            var result = new List<App1Categoria>();
+            string procedureName = "[getPrioridades]";
+            var result = new List<App1Prioridad>();
+
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-                connString))
+                using (SqlCommand command = new SqlCommand(procedureName, connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-
                     using (SqlDataReader? reader = command.ExecuteReader())
                     {
                         if(reader.HasRows)
                         {
-                            while (reader.Read())
+                            while(reader.Read())
                             {
-                                int id = reader.GetIntOrNull(0);
-                                string? categoria = reader.GetStringOrNull(1);
-                                bool? estadocat = reader.GetBoolOrNull(2);
+                                int id = reader.GetInt32(0);
+                                string prioridad = reader.GetString(1);
 
-
-                                App1Categoria tmpRecord = new App1Categoria()
+                                App1Prioridad tmp = new App1Prioridad()
                                 {
                                     Id = id,
-                                    Categoria = categoria,
-                                    EstadoCat = estadocat,
+                                    Prioridad = prioridad
                                 };
-                                result.Add(tmpRecord);
+                                result.Add(tmp);
                             }
                             connString.Close();
                             return new OkObjectResult(result);
@@ -76,7 +63,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new NotFoundObjectResult(result);
+                            return new StatusCodeResult(404);
                         }
                     }
                 }

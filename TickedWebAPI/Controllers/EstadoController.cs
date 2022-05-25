@@ -9,66 +9,53 @@ namespace TickedWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class EstadoController : ControllerBase
     {
-
         private readonly tickedContext context;
-
-        public CategoriaController(tickedContext context)
+        public EstadoController(tickedContext context)
         {
             this.context = context;
         }
 
         static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
         public static IConfigurationRoot configuration = builder.Build();
-
         public string conn = configuration.GetConnectionString("ConnectionString");
 
-
-
-        #region obtencion de categorias
-        // GET: api/<CategoriaController>
+        #region obtener Prioridades
+        // GET: api/<EstadoControllerController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Categoria))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Estado))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get()
         {
-
             SqlConnection connString = new SqlConnection();
-
             connString.ConnectionString = conn;
-
             connString.Open();
 
-            string procedureName = "[obtenerCategorias]";
-            var result = new List<App1Categoria>();
+            string procedureName = "[getEstados]";
+            var result = new List<App1Estado>();
+
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-                connString))
+                using (SqlCommand command = new SqlCommand(procedureName, connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-
                     using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        if(reader.HasRows)
+                        if (reader.HasRows)
                         {
                             while (reader.Read())
                             {
-                                int id = reader.GetIntOrNull(0);
-                                string? categoria = reader.GetStringOrNull(1);
-                                bool? estadocat = reader.GetBoolOrNull(2);
+                                int id = reader.GetInt32(0);
+                                string estado = reader.GetString(1);
 
-
-                                App1Categoria tmpRecord = new App1Categoria()
+                                App1Estado tmp = new App1Estado()
                                 {
                                     Id = id,
-                                    Categoria = categoria,
-                                    EstadoCat = estadocat,
+                                    Estado = estado
                                 };
-                                result.Add(tmpRecord);
+                                result.Add(tmp);
                             }
                             connString.Close();
                             return new OkObjectResult(result);
@@ -76,12 +63,12 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new NotFoundObjectResult(result);
+                            return new StatusCodeResult(404);
                         }
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 connString.Close();
                 return new StatusCodeResult(500);
