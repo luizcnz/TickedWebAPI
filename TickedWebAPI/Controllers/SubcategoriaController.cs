@@ -116,13 +116,14 @@ namespace TickedWebAPI.Controllers
         //}
         #endregion
 
-
         #region get de categorias sin filtro con llaves foraneas
         // GET: api/<SubcategoriaController>
         [HttpGet]
-        public List<App1SubcategoriaJoin> GetList()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1SubcategoriaJoin))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetList()
         {
-
             SqlConnection connString = new SqlConnection();
 
             connString.ConnectionString = conn;
@@ -131,41 +132,62 @@ namespace TickedWebAPI.Controllers
 
             string procedureName = "[getSubCategorias]";
             var result = new List<App1SubcategoriaJoin>();
-            using (SqlCommand command = new SqlCommand(procedureName,
-            connString))
+
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-
-                using (SqlDataReader? reader = command.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(procedureName,
+                connString))
                 {
-                    while (reader.Read())
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        int id = reader.GetIntOrNull(0);
-                        string? subcategoria = reader.GetStringOrNull(1);
-                        string categoria = reader.GetStringOrNull(2);
-                        bool? estadosub = reader.GetBoolOrNull(3);
-
-
-                        App1SubcategoriaJoin tmpRecord = new App1SubcategoriaJoin()
+                        if(reader.HasRows)
                         {
-                            Id = id,
-                            Subcategoria = subcategoria,
-                            Categoria = categoria,
-                            EstadoSub = estadosub,
+                            while (reader.Read())
+                            {
+                                int id = reader.GetIntOrNull(0);
+                                string? subcategoria = reader.GetStringOrNull(1);
+                                string categoria = reader.GetStringOrNull(2);
+                                bool? estadosub = reader.GetBoolOrNull(3);
 
 
-                        };
-                        result.Add(tmpRecord);
+                                App1SubcategoriaJoin tmpRecord = new App1SubcategoriaJoin()
+                                {
+                                    Id = id,
+                                    Subcategoria = subcategoria,
+                                    Categoria = categoria,
+                                    EstadoSub = estadosub,
+
+
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new NotFoundObjectResult(result);
+                        }
                     }
                 }
             }
-            return result;
+            catch(Exception ex)
+            {
+                connString.Close();
+                return new StatusCodeResult(500);
+            }
         }
         #endregion
 
         #region get de subcategorias segun id de categoria con llave foranea
         [HttpGet("{CatId}")]
-        public List<App1SubcategoriaJoin> Get(int CatId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1SubcategoriaJoin))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get(int CatId)
         {
 
             SqlConnection connString = new SqlConnection();
@@ -177,35 +199,52 @@ namespace TickedWebAPI.Controllers
             string procedureName = "[getSubCategoriasSegunId]";
             var result = new List<App1SubcategoriaJoin>();
 
-            using (SqlCommand command = new SqlCommand(procedureName,
-            connString))
+            try
             {
-                command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@categoriaId", CatId));
-                using (SqlDataReader? reader = command.ExecuteReader())
+                using (SqlCommand command = new SqlCommand(procedureName,
+                connString))
                 {
-                    while (reader.Read())
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.Add(new SqlParameter("@categoriaId", CatId));
+                    using (SqlDataReader? reader = command.ExecuteReader())
                     {
-                        int id = reader.GetIntOrNull(0);
-                        string? subcategoria = reader.GetStringOrNull(1);
-                        string categoria = reader.GetStringOrNull(2);
-                        bool? estadosub = reader.GetBoolOrNull(3);
-
-
-                        App1SubcategoriaJoin tmpRecord = new App1SubcategoriaJoin()
+                        if(reader.HasRows)
                         {
-                            Id = id,
-                            Subcategoria = subcategoria,
-                            Categoria = categoria,
-                            EstadoSub = estadosub,
+                            while (reader.Read())
+                            {
+                                int id = reader.GetIntOrNull(0);
+                                string? subcategoria = reader.GetStringOrNull(1);
+                                string categoria = reader.GetStringOrNull(2);
+                                bool? estadosub = reader.GetBoolOrNull(3);
 
 
-                        };
-                        result.Add(tmpRecord);
+                                App1SubcategoriaJoin tmpRecord = new App1SubcategoriaJoin()
+                                {
+                                    Id = id,
+                                    Subcategoria = subcategoria,
+                                    Categoria = categoria,
+                                    EstadoSub = estadosub,
+
+
+                                };
+                                result.Add(tmpRecord);
+                            }
+                            connString.Close();
+                            return new OkObjectResult(result);
+                        }
+                        else
+                        {
+                            connString.Close();
+                            return new NotFoundObjectResult(result);
+                        }
                     }
                 }
             }
-            return result;
+            catch(Exception ex)
+            {
+                connString.Close();
+                return new StatusCodeResult(500);
+            }
         }
         #endregion
 
