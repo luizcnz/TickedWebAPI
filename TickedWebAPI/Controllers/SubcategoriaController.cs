@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using TickedWebAPI.Models;
+using TickedWebAPI.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,104 +19,6 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
-        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-        public static IConfigurationRoot configuration = builder.Build();
-
-        public string conn = configuration.GetConnectionString("ConnectionString");
-
-        #region get de categorias sin filtro
-        // GET: api/<SubcategoriaController>
-        //[HttpGet]
-        //public List<App1Subcategoria> GetList()
-        //{
-
-        //    SqlConnection connString = new SqlConnection();
-
-        //    connString.ConnectionString = conn;
-
-        //    connString.Open();
-
-        //    string procedureName = "[obtenerSubCategorias]";
-        //    var result = new List<App1Subcategoria>();
-        //    using (SqlCommand command = new SqlCommand(procedureName,
-        //    connString))
-        //    {
-        //        command.CommandType = CommandType.StoredProcedure;
-
-        //        using (SqlDataReader? reader = command.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                int id = reader.GetIntOrNull(0);
-        //                string? subcategoria = reader.GetStringOrNull(1);
-        //                int categoriaid = reader.GetIntOrNull(2);
-        //                bool? estadosub = reader.GetBoolOrNull(3);
-
-
-        //                App1Subcategoria tmpRecord = new App1Subcategoria()
-        //                {
-        //                    Id = id,
-        //                    Subcategoria = subcategoria,
-        //                    CategoriaId = categoriaid,
-        //                    EstadoSub = estadosub,
-
-
-        //                };
-        //                result.Add(tmpRecord);
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-        #endregion
-
-        #region get de subcategorias segun id de categoria
-        //[HttpGet("{CatId}")]
-        //public List<App1Subcategoria> Get(int CatId)
-        //{
-
-        //    SqlConnection connString = new SqlConnection();
-
-        //    connString.ConnectionString = conn;
-
-        //    connString.Open();
-
-        //    string procedureName = "[obtenerSubCategoriasSegunId]";
-        //    var result = new List<App1Subcategoria>();
-
-        //    using (SqlCommand command = new SqlCommand(procedureName,
-        //    connString))
-        //    {
-        //        command.CommandType = CommandType.StoredProcedure;
-        //        command.Parameters.Add(new SqlParameter("@categoriaId", CatId));
-        //        using (SqlDataReader? reader = command.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                int id = reader.GetIntOrNull(0);
-        //                string? subcategoria = reader.GetStringOrNull(1);
-        //                int categoriaid = reader.GetIntOrNull(2);
-        //                bool? estadosub = reader.GetBoolOrNull(3);
-
-
-        //                App1Subcategoria tmpRecord = new App1Subcategoria()
-        //                {
-        //                    Id = id,
-        //                    Subcategoria = subcategoria,
-        //                    CategoriaId = categoriaid,
-        //                    EstadoSub = estadosub,
-
-
-        //                };
-        //                result.Add(tmpRecord);
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}
-        #endregion
-
         #region get de categorias sin filtro con llaves foraneas
         // GET: api/<SubcategoriaController>
         [HttpGet]
@@ -126,7 +29,7 @@ namespace TickedWebAPI.Controllers
         {
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
 
             connString.Open();
 
@@ -192,7 +95,7 @@ namespace TickedWebAPI.Controllers
 
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
 
             connString.Open();
 
