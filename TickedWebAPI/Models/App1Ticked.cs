@@ -36,19 +36,11 @@ namespace TickedWebAPI.Models
         [Required(ErrorMessage = "Se debe proporcionar una fecha")]
         public DateTime? Fechacreado { get; set; }
 
-        [Required(ErrorMessage = "Se debe ingresar un estado")]
-        public int? EstadoId { get; set; }
-
-        [RegularExpression(@"^[1-3''-'\s]{1,1}$",
-         ErrorMessage = "Characters are not allowed.")]
         [Required(ErrorMessage = "Se debe ingresar un nivel de prioridad")]
         public int? PrioridadId { get; set; }
 
         [Required(ErrorMessage = "Se debe ingresar la subcategoria del Ticked")]
         public int? SubcategoriaId { get; set; }
-
-        //Pendiente de decidir si eliminar o no
-        //public int? TratamientoId { get; set; }
 
         [Required(ErrorMessage = "Se debe ingresar el codigo del usuario solicitante")]
         public int? UsuarioSolicitanteId { get; set; }

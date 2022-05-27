@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using TickedWebAPI.Models;
+using TickedWebAPI.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,14 +20,6 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
-        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-        public static IConfigurationRoot configuration = builder.Build();
-
-        public string conn = configuration.GetConnectionString("ConnectionString");
-
-
-
         #region obtencion de categorias
         // GET: api/<CategoriaController>
         [HttpGet]
@@ -38,7 +31,7 @@ namespace TickedWebAPI.Controllers
 
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
 
             connString.Open();
 

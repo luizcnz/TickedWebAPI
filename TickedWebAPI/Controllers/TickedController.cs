@@ -4,6 +4,7 @@ using TickedWebAPI.Models;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using TickedWebAPI.Utils;
 
 namespace TickedWebAPI.Controllers
 {
@@ -19,14 +20,6 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
-
-        static IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
-
-        public static IConfigurationRoot configuration = builder.Build();
-
-        public string conn = configuration.GetConnectionString("ConnectionString");
-
-
         #region obtener tickeds con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet]
@@ -36,11 +29,11 @@ namespace TickedWebAPI.Controllers
         public async Task<IActionResult> GetAllTickeds()
         {
             SqlConnection connString = new SqlConnection();
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
             connString.Open();
 
             SqlConnection connString2 = new SqlConnection();
-            connString2.ConnectionString = conn;
+            connString2.ConnectionString = ConnectionConf.conn;
             connString2.Open();
 
             string procedureName = "[getTickeds]";
@@ -179,14 +172,14 @@ namespace TickedWebAPI.Controllers
 
         #region obtener tickeds por id de ticked con llaves foraneas
         // GET: api/<TickedController>
-        [HttpGet("/tickedid/{TkId}")]
+        [HttpGet("/api/Ticked/tickedid/{TkId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetTicked(int TkId)
         {
             SqlConnection connString = new SqlConnection();
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
 
             connString.Open();
 
@@ -282,18 +275,18 @@ namespace TickedWebAPI.Controllers
 
         #region obtener tickeds por solicitante del ticked con llaves foraneas
         // GET: api/<TickedController>
-        [HttpGet("/user/{UserId}")]
+        [HttpGet("/api/Ticked/userid/{UserId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetUserTickeds(int UserId)
         {
             SqlConnection connString = new SqlConnection();
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
             connString.Open();
 
             SqlConnection connString2 = new SqlConnection();
-            connString2.ConnectionString = conn;
+            connString2.ConnectionString = ConnectionConf.conn;
             connString2.Open();
 
             string procedureName = "[getTickedsByUserId]";
@@ -432,11 +425,12 @@ namespace TickedWebAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(App1TickedPost))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post([FromBody] App1TickedPost ticked)
         {
             SqlConnection connString = new SqlConnection();
 
-            connString.ConnectionString = conn;
+            connString.ConnectionString = ConnectionConf.conn;
 
             connString.Open();
 
@@ -445,49 +439,73 @@ namespace TickedWebAPI.Controllers
             string? Descripcion = ticked.Descripcion;
             string? Adjunto = ticked.Adjunto;
             DateTime? Fechacreado = ticked.Fechacreado;
-            int? Estado = ticked.EstadoId;
             int? Prioridad = ticked.PrioridadId;
             int? Subcategoria = ticked.SubcategoriaId;
             int? UsuarioSolicitante = ticked.UsuarioSolicitanteId;
 
+            bool existePrioridad = DataCheck.GetExistencia("[checkPrioridad]", Prioridad);
+            bool existeSubcategoria = DataCheck.GetExistencia("[checkSubcategoria]", Subcategoria);
+            bool existeUsuario = DataCheck.GetExistencia("[checkUser]", UsuarioSolicitante);
 
-            try
+            if(existePrioridad == true)
             {
-                SqlCommand command = new SqlCommand(procedureName,
-                connString);
+                if (existeSubcategoria == true)
+                {
+                    if(existeUsuario == true)
+                    {
+                        try
+                        {
+                            SqlCommand command = new SqlCommand(procedureName,
+                            connString);
 
-                command.CommandType = CommandType.StoredProcedure;
-                //command.Parameters.Add(new SqlParameter("@Numero", Numero));
-                command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
-                command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
-                command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
-                command.Parameters.Add(new SqlParameter("@Estado", 1));
-                command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
-                command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
-                //command.Parameters.Add(new SqlParameter("@Tratamiento", Tratamiento));
-                command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
+                            command.CommandType = CommandType.StoredProcedure;
+                            command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
+                            command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
+                            command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
+                            command.Parameters.Add(new SqlParameter("@Estado", 1));
+                            command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
+                            command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
+                            command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
 
-                //using (SqlDataReader? reader = command.ExecuteReader())
+                            //using (SqlDataReader? reader = command.ExecuteReader())
 
-                int id = (int)command.ExecuteScalar();
+                            int id = (int)command.ExecuteScalar();
 
-                string uri = "http://localhost:63877/tickedid/" + id + "";
-                connString.Close();
+                            string uri = "http://192.168.0.102:5292/api/Ticked/tickedid/" + id + "";
+                            connString.Close();
 
-                return Created(uri, ticked);
+                            return Created(uri, ticked);
+                            //return Content("Prueba de insercion exitosa");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Exception: " + ex.Message);
+                            connString.Close();
+                            return new StatusCodeResult(500);
+                        }
+                    }
+                    else
+                    {
+                        return new BadRequestObjectResult("Debe ingresar un usuario solicitante valido");
+                    }
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Debe ingresar una subcategoria valida");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("Exception: " + ex.Message);
-                connString.Close();
-                //var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
-                //return response;
-                return new StatusCodeResult(500);
-
+                return new BadRequestObjectResult("Debe ingresar una prioridad valida");
             }
+            
 
         }
         #endregion
+
+
     }
+
+
 }
 
