@@ -23,10 +23,10 @@ namespace TickedWebAPI.Controllers
         #region obtener tickeds con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAllTickeds()
+        public IActionResult GetAllTickeds()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -38,7 +38,7 @@ namespace TickedWebAPI.Controllers
 
             string procedureName = "[getTickeds]";
             string procedureName2 = "[getDetalles]";
-            var result = new List<App1Ticked>();
+            var result = new List<Ticked>();
 
             try
             {
@@ -46,7 +46,6 @@ namespace TickedWebAPI.Controllers
             connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
-                    //command.Parameters.Add(new SqlParameter("@estado", 4));
 
                     using (SqlDataReader? reader = command.ExecuteReader())
                     {
@@ -88,7 +87,7 @@ namespace TickedWebAPI.Controllers
                                 string? prioridad = reader.GetStringOrNull(7);
                                 string? subcategoria = reader.GetStringOrNull(8);
                                 string? usuarioSolicitante = reader.GetStringOrNull(9);
-                                var detalles = new List<App1DetalleTicked>();
+                                var detalles = new List<DetalleTicked>();
                                 // Inicio del codigo para obtener los detalles del ticked
                                 try
                                 {
@@ -108,7 +107,7 @@ namespace TickedWebAPI.Controllers
                                                     string detalleUsuario = reader2.GetString(2);
                                                     string detalleAdjunto = reader2.GetString(3);
 
-                                                    App1DetalleTicked tmp = new App1DetalleTicked()
+                                                    DetalleTicked tmp = new DetalleTicked()
                                                     {
                                                         Fecha = detalleFecha,
                                                         Comentario = detalleComentario,
@@ -129,7 +128,7 @@ namespace TickedWebAPI.Controllers
                                     return new StatusCodeResult(500);
                                 }
 
-                                App1Ticked tmpRecord = new App1Ticked()
+                                Ticked tmpRecord = new Ticked()
                                 {
                                     Numero = numero,
                                     Descripcion = descripcion,
@@ -153,7 +152,7 @@ namespace TickedWebAPI.Controllers
                         {
                             connString.Close();
                             connString2.Close();
-                            return new StatusCodeResult(404);
+                            return new NotFoundObjectResult("No se ha encontrado ningun ticked");
                         }
                     }
                 }
@@ -173,10 +172,10 @@ namespace TickedWebAPI.Controllers
         #region obtener tickeds por id de ticked con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet("/api/Ticked/tickedid/{TkId}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetTicked(int TkId)
+        public IActionResult GetTicked(int TkId)
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -185,7 +184,7 @@ namespace TickedWebAPI.Controllers
 
             string procedureName = "[getTickedsById]";
 
-            var result = new List<App1Ticked>();
+            var result = new List<Ticked>();
             try
             {
                 using (SqlCommand command = new SqlCommand(procedureName,
@@ -234,7 +233,7 @@ namespace TickedWebAPI.Controllers
                                 string? subcategoria = reader.GetStringOrNull(7);
                                 string? usuarioSolicitante = reader.GetStringOrNull(8);
 
-                                App1Ticked tmpRecord = new App1Ticked()
+                                Ticked tmpRecord = new Ticked()
                                 {
                                     Numero = numero,
                                     Descripcion = descripcion,
@@ -258,7 +257,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new StatusCodeResult(404);
+                            return new NotFoundObjectResult("No se encontro ningun ticked con el ID: "+TkId+"");
                         }
                     }
                 }
@@ -276,10 +275,10 @@ namespace TickedWebAPI.Controllers
         #region obtener tickeds por solicitante del ticked con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet("/api/Ticked/userid/{UserId}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Ticked))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserTickeds(int UserId)
+        public IActionResult GetUserTickeds(int UserId)
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -292,7 +291,7 @@ namespace TickedWebAPI.Controllers
             string procedureName = "[getTickedsByUserId]";
             string procedureName2 = "[getDetalles]";
 
-            var result = new List<App1Ticked>();
+            var result = new List<Ticked>();
             try
             {
                 using (SqlCommand command = new SqlCommand(procedureName,
@@ -341,7 +340,7 @@ namespace TickedWebAPI.Controllers
                                 string? prioridad = reader.GetStringOrNull(7);
                                 string? subcategoria = reader.GetStringOrNull(8);
                                 string? usuarioSolicitante = reader.GetStringOrNull(9);
-                                var detalles = new List<App1DetalleTicked>();
+                                var detalles = new List<DetalleTicked>();
 
                                 // Inicio del codigo para obtener los detalles del ticked
                                 try
@@ -362,7 +361,7 @@ namespace TickedWebAPI.Controllers
                                                     string detalleUsuario = reader2.GetString(2);
                                                     string detalleAdjunto = reader2.GetString(3);
 
-                                                    App1DetalleTicked tmp = new App1DetalleTicked()
+                                                    DetalleTicked tmp = new DetalleTicked()
                                                     {
                                                         Fecha = detalleFecha,
                                                         Comentario = detalleComentario,
@@ -384,7 +383,7 @@ namespace TickedWebAPI.Controllers
                                 }
 
 
-                                App1Ticked tmpRecord = new App1Ticked()
+                                Ticked tmpRecord = new Ticked()
                                 {
                                     Numero = numero,
                                     Descripcion = descripcion,
@@ -405,7 +404,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new StatusCodeResult(404);
+                            return new NotFoundObjectResult("No se a encontrado ningun ticked con el Id de Usuario: "+ UserId + "");
                         }
                     }
                 }
@@ -426,7 +425,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(App1TickedPost))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] App1TickedPost ticked)
+        public IActionResult Post([FromBody] App1TickedPost ticked)
         {
             SqlConnection connString = new SqlConnection();
 
@@ -443,9 +442,9 @@ namespace TickedWebAPI.Controllers
             int? Subcategoria = ticked.SubcategoriaId;
             int? UsuarioSolicitante = ticked.UsuarioSolicitanteId;
 
-            bool existePrioridad = DataCheck.GetExistencia("[checkPrioridad]", Prioridad);
-            bool existeSubcategoria = DataCheck.GetExistencia("[checkSubcategoria]", Subcategoria);
-            bool existeUsuario = DataCheck.GetExistencia("[checkUser]", UsuarioSolicitante);
+            bool existePrioridad = DataCheck.VerificarExistencia("[checkPrioridad]", Prioridad);
+            bool existeSubcategoria = DataCheck.VerificarExistencia("[checkSubcategoria]", Subcategoria);
+            bool existeUsuario = DataCheck.VerificarExistencia("[checkUser]", UsuarioSolicitante);
 
             if(existePrioridad == true)
             {

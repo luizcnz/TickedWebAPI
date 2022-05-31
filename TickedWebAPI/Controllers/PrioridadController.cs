@@ -21,17 +21,17 @@ namespace TickedWebAPI.Controllers
         #region obtener Prioridades
         // GET: api/<PrioridadController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Prioridad))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Prioridad))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
             connString.Open();
 
             string procedureName = "[getPrioridades]";
-            var result = new List<App1Prioridad>();
+            var result = new List<Prioridad>();
 
             try
             {
@@ -47,10 +47,10 @@ namespace TickedWebAPI.Controllers
                                 int id = reader.GetInt32(0);
                                 string prioridad = reader.GetString(1);
 
-                                App1Prioridad tmp = new App1Prioridad()
+                                Prioridad tmp = new Prioridad()
                                 {
                                     Id = id,
-                                    Prioridad = prioridad
+                                    PrioridadTicked = prioridad
                                 };
                                 result.Add(tmp);
                             }
@@ -60,7 +60,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new StatusCodeResult(404);
+                            return new NotFoundObjectResult("No se encotraron prioridades disponibles");
                         }
                     }
                 }
@@ -68,6 +68,7 @@ namespace TickedWebAPI.Controllers
             catch(Exception ex)
             {
                 connString.Close();
+                Console.Write("Se han encontrado los siguientes errores: \n" + ex);
                 return new StatusCodeResult(500);
             }
         }

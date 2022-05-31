@@ -23,10 +23,10 @@ namespace TickedWebAPI.Controllers
         #region obtencion de categorias
         // GET: api/<CategoriaController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Categoria))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Categoria))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
 
             SqlConnection connString = new SqlConnection();
@@ -36,7 +36,7 @@ namespace TickedWebAPI.Controllers
             connString.Open();
 
             string procedureName = "[obtenerCategorias]";
-            var result = new List<App1Categoria>();
+            var result = new List<Categoria>();
             try
             {
                 using (SqlCommand command = new SqlCommand(procedureName,
@@ -55,10 +55,10 @@ namespace TickedWebAPI.Controllers
                                 bool? estadocat = reader.GetBoolOrNull(2);
 
 
-                                App1Categoria tmpRecord = new App1Categoria()
+                                Categoria tmpRecord = new Categoria()
                                 {
                                     Id = id,
-                                    Categoria = categoria,
+                                    CategoriaTicked = categoria,
                                     EstadoCat = estadocat,
                                 };
                                 result.Add(tmpRecord);
@@ -69,7 +69,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new NotFoundObjectResult(result);
+                            return new NotFoundObjectResult("No se encotraron categorias disponibles");
                         }
                     }
                 }
@@ -77,6 +77,7 @@ namespace TickedWebAPI.Controllers
             catch(Exception ex)
             {
                 connString.Close();
+                Console.Write("Se han encontrado los siguientes errores: \n" + ex);
                 return new StatusCodeResult(500);
             }
         }

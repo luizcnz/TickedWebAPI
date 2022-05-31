@@ -1,8 +1,8 @@
 ﻿namespace TickedWebAPI.Models
 {
-    public class App1Prioridad
+    public class Prioridad
     {
         public int Id { get; set; }
-        public string Prioridad { get; set; }
+        public string? PrioridadTicked { get; set; }
     }
 }

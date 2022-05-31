@@ -21,17 +21,17 @@ namespace TickedWebAPI.Controllers
         #region obtener Prioridades
         // GET: api/<EstadoControllerController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(App1Estado))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Estado))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
             connString.Open();
 
             string procedureName = "[getEstados]";
-            var result = new List<App1Estado>();
+            var result = new List<Estado>();
 
             try
             {
@@ -47,10 +47,10 @@ namespace TickedWebAPI.Controllers
                                 int id = reader.GetInt32(0);
                                 string estado = reader.GetString(1);
 
-                                App1Estado tmp = new App1Estado()
+                                Estado tmp = new Estado()
                                 {
                                     Id = id,
-                                    Estado = estado
+                                    EstadoTicked = estado
                                 };
                                 result.Add(tmp);
                             }
@@ -60,7 +60,7 @@ namespace TickedWebAPI.Controllers
                         else
                         {
                             connString.Close();
-                            return new StatusCodeResult(404);
+                            return new NotFoundObjectResult("No se encontraron estados disponibles");
                         }
                     }
                 }
@@ -68,6 +68,7 @@ namespace TickedWebAPI.Controllers
             catch (Exception ex)
             {
                 connString.Close();
+                Console.Write("Se han encontrado los siguientes errores: \n" + ex);
                 return new StatusCodeResult(500);
             }
         }

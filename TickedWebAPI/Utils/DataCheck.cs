@@ -6,7 +6,7 @@ namespace TickedWebAPI.Utils
 {
     public static class DataCheck
     {
-        public static bool GetExistencia(string procedure, int? id)
+        public static bool VerificarExistencia(string procedure, int? id)
         {
             bool existe = false;
 
@@ -40,7 +40,7 @@ namespace TickedWebAPI.Utils
             catch (Exception ex)
             {
                 connString.Close();
-                Console.Write("Se han encontrado los siguientes errores mientras se obtenian lo detalles: " + ex + "");
+                Console.Write("Se han encontrado los siguientes errores mientras se los datos: " + ex + "");
                 return existe;
             }
         }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace TickedWebAPI.Models
 {
-    public partial class App1Categoria
+    public partial class Categoria
     {
         public int Id { get; set; }
-        public string Categoria { get; set; } = null!;
+        public string? CategoriaTicked { get; set; } = null!;
         public bool? EstadoCat { get; set; }
     }
 }

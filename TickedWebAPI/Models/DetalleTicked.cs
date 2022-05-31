@@ -1,6 +1,6 @@
 ﻿namespace TickedWebAPI.Models
 {
-    public class App1DetalleTicked
+    public class DetalleTicked
     {
         public DateTime Fecha { get; set; }
         public string Comentario { get; set; }

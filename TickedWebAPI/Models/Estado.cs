@@ -1,8 +1,8 @@
 ﻿namespace TickedWebAPI.Models
 {
-    public class App1Estado
+    public class Estado
     {
         public int Id { get; set; }
-        public string Estado { get; set; }
+        public string? EstadoTicked { get; set; }
     }
 }

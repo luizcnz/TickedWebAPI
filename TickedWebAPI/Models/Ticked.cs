@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace TickedWebAPI.Models
 {
-    public class App1Ticked
+    public class Ticked
     {
         public string? Numero { get; set; }
         public string? Descripcion { get; set; }
@@ -18,7 +18,7 @@ namespace TickedWebAPI.Models
         public string? Prioridad { get; set; }
         public string? Subcategoria { get; set; }
         public string? UsuarioSolicitante { get; set; }
-        public virtual ICollection<App1DetalleTicked> Detalles { get; set; }
+        public virtual ICollection<DetalleTicked>? Detalles { get; set; }
     }
 
     public class App1TickedPost
