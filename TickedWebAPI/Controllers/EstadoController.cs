@@ -18,13 +18,13 @@ namespace TickedWebAPI.Controllers
             this.context = context;
         }
 
-        #region obtener Prioridades
+        #region obtener estados
         // GET: api/<EstadoControllerController>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Estado))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get()
+        public async Task<IActionResult> GetEstados()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -35,7 +35,7 @@ namespace TickedWebAPI.Controllers
 
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName, connString))
+                await using (SqlCommand command = new SqlCommand(procedureName, connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     using (SqlDataReader? reader = command.ExecuteReader())
@@ -55,7 +55,9 @@ namespace TickedWebAPI.Controllers
                                 result.Add(tmp);
                             }
                             connString.Close();
-                            return new OkObjectResult(result);
+                            var data = new OkObjectResult(result);
+                            
+                            return data;
                         }
                         else
                         {

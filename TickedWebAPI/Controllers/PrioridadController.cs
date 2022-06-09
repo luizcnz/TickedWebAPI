@@ -24,7 +24,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Prioridad))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get()
+        public async Task<IActionResult> GetPrioridades()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -35,7 +35,7 @@ namespace TickedWebAPI.Controllers
 
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName, connString))
+                await using (SqlCommand command = new SqlCommand(procedureName, connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     using (SqlDataReader? reader = command.ExecuteReader())

@@ -25,7 +25,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SubcategoriaJoin))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetList()
+        public async Task<IActionResult> GetSubcategorias()
         {
             SqlConnection connString = new SqlConnection();
 
@@ -38,7 +38,7 @@ namespace TickedWebAPI.Controllers
 
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
+                await using (SqlCommand command = new SqlCommand(procedureName,
                 connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -91,7 +91,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SubcategoriaJoin))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get(int CatId)
+        public async Task<IActionResult> GetSubcategoriasById(int CatId)
         {
 
             SqlConnection connString = new SqlConnection();
@@ -105,7 +105,7 @@ namespace TickedWebAPI.Controllers
 
             try
             {
-                using SqlCommand command = new SqlCommand(procedureName,
+                await using SqlCommand command = new SqlCommand(procedureName,
                 connString);
                 command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.Add(new SqlParameter("@categoriaId", CatId));

@@ -9,4 +9,13 @@ namespace TickedWebAPI.Models
         public string? CategoriaTicked { get; set; } = null!;
         public bool? EstadoCat { get; set; }
     }
+
+
+    public partial class CategoriaSubcat
+    {
+        public int Id { get; set; }
+        public string? CategoriaTicked { get; set; } = null!;
+        public bool? EstadoCat { get; set; }
+        public ICollection<Subcategoria>? Subcategoria { get; set; }
+    }
 }

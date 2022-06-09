@@ -26,7 +26,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetAllTickeds()
+        public async Task<IActionResult> GetAllTickeds()
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -42,8 +42,7 @@ namespace TickedWebAPI.Controllers
 
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-            connString))
+                await using (SqlCommand command = new SqlCommand(procedureName,connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -175,20 +174,23 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetTicked(int TkId)
+        public async Task<IActionResult> GetTicked(int TkId)
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
-
             connString.Open();
 
+            SqlConnection connString2 = new SqlConnection();
+            connString2.ConnectionString = ConnectionConf.conn;
+            connString2.Open();
+
             string procedureName = "[getTickedsById]";
+            string procedureName2 = "[getDetalles]";
 
             var result = new List<Ticked>();
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-                connString))
+                await using (SqlCommand command = new SqlCommand(procedureName,connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@ID", TkId));
@@ -199,39 +201,80 @@ namespace TickedWebAPI.Controllers
                         {
                             while (reader.Read())
                             {
+                                int? id = reader.GetInt32(0);
                                 string? numero;
-                                if (reader.IsDBNull(0))
+                                if (reader.IsDBNull(1))
                                 {
                                     numero = "Numero Pendiente";
                                 }
                                 else
                                 {
-                                    numero = reader.GetString(0);
+                                    numero = reader.GetString(1);
                                 }
-                                string? descripcion = reader.GetStringOrNull(1);
-                                string? adjunto = reader.GetStringOrNull(2);
+                                string? descripcion = reader.GetStringOrNull(2);
+                                string? adjunto = reader.GetStringOrNull(3);
                                 string? fechacreado;
-                                if (reader.IsDBNull(3))
+                                if (reader.IsDBNull(4))
                                 {
                                     fechacreado = "Fecha Pendiente";
                                 }
                                 else
                                 {
-                                    fechacreado = Convert.ToString(reader.GetDateTime(3));
+                                    fechacreado = Convert.ToString(reader.GetDateTime(4));
                                 }
                                 string? fechaatendido;
-                                if (reader.IsDBNull(4))
+                                if (reader.IsDBNull(5))
                                 {
                                     fechaatendido = "Fecha Pendiente";
                                 }
                                 else
                                 {
-                                    fechaatendido = Convert.ToString(reader.GetDateTime(4));
+                                    fechaatendido = Convert.ToString(reader.GetDateTime(5));
                                 }
-                                string? estadoread = reader.GetStringOrNull(5);
-                                string? prioridad = reader.GetStringOrNull(6);
-                                string? subcategoria = reader.GetStringOrNull(7);
-                                string? usuarioSolicitante = reader.GetStringOrNull(8);
+                                string? estadoread = reader.GetStringOrNull(6);
+                                string? prioridad = reader.GetStringOrNull(7);
+                                string? subcategoria = reader.GetStringOrNull(8);
+                                string? usuarioSolicitante = reader.GetStringOrNull(9);
+                                var detalles = new List<DetalleTicked>();
+
+                                try
+                                {
+                                    using (SqlCommand command2 = new SqlCommand(procedureName2,
+                                    connString2))
+                                    {
+                                        command2.CommandType = CommandType.StoredProcedure;
+                                        command2.Parameters.Add(new SqlParameter("@NumId", id));
+                                        using (SqlDataReader? reader2 = command2.ExecuteReader())
+                                        {
+                                            if (reader2.HasRows)
+                                            {
+                                                while (reader2.Read())
+                                                {
+                                                    DateTime detalleFecha = reader2.GetDateTime(0);
+                                                    string detalleComentario = reader2.GetString(1);
+                                                    string detalleUsuario = reader2.GetString(2);
+                                                    string detalleAdjunto = reader2.GetString(3);
+
+                                                    DetalleTicked tmp = new DetalleTicked()
+                                                    {
+                                                        Fecha = detalleFecha,
+                                                        Comentario = detalleComentario,
+                                                        Usuario = detalleUsuario,
+                                                        Adjunto = detalleAdjunto
+                                                    };
+                                                    detalles.Add(tmp);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    connString.Close();
+                                    connString2.Close();
+                                    Console.Write("Se han encontrado los siguientes errores mientras se obtenian lo detalles: " + ex + "");
+                                    return new StatusCodeResult(500);
+                                }
 
                                 Ticked tmpRecord = new Ticked()
                                 {
@@ -243,7 +286,8 @@ namespace TickedWebAPI.Controllers
                                     Estado = estadoread,
                                     Prioridad = prioridad,
                                     Subcategoria = subcategoria,
-                                    UsuarioSolicitante = usuarioSolicitante
+                                    UsuarioSolicitante = usuarioSolicitante,
+                                    Detalles = detalles
 
                                 };
                                 result.Add(tmpRecord);
@@ -278,7 +322,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Ticked))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetUserTickeds(int UserId)
+        public async Task<IActionResult> GetUserTickeds(int UserId)
         {
             SqlConnection connString = new SqlConnection();
             connString.ConnectionString = ConnectionConf.conn;
@@ -294,8 +338,7 @@ namespace TickedWebAPI.Controllers
             var result = new List<Ticked>();
             try
             {
-                using (SqlCommand command = new SqlCommand(procedureName,
-                connString))
+                await using (SqlCommand command = new SqlCommand(procedureName, connString))
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.Add(new SqlParameter("@UserId", UserId));
@@ -425,7 +468,7 @@ namespace TickedWebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(App1TickedPost))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Post([FromBody] App1TickedPost ticked)
+        public async Task<IActionResult> Post([FromBody] App1TickedPost ticked)
         {
             SqlConnection connString = new SqlConnection();
 
@@ -454,27 +497,27 @@ namespace TickedWebAPI.Controllers
                     {
                         try
                         {
-                            SqlCommand command = new SqlCommand(procedureName,
-                            connString);
+                            await using (SqlCommand command = new SqlCommand(procedureName,connString))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
+                                command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
+                                command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
+                                command.Parameters.Add(new SqlParameter("@Estado", 1));
+                                command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
+                                command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
+                                command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
 
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.Parameters.Add(new SqlParameter("@Descripcion", Descripcion));
-                            command.Parameters.Add(new SqlParameter("@Adjunto", Adjunto));
-                            command.Parameters.Add(new SqlParameter("@Fechacreado", Fechacreado));
-                            command.Parameters.Add(new SqlParameter("@Estado", 1));
-                            command.Parameters.Add(new SqlParameter("@Prioridad", Prioridad));
-                            command.Parameters.Add(new SqlParameter("@Subcategoria", Subcategoria));
-                            command.Parameters.Add(new SqlParameter("@UsuarioSolicitante", UsuarioSolicitante));
+                                //using (SqlDataReader? reader = command.ExecuteReader())
 
-                            //using (SqlDataReader? reader = command.ExecuteReader())
+                                int id = (int)command.ExecuteScalar();
 
-                            int id = (int)command.ExecuteScalar();
+                                string uri = "http://192.168.0.102:5292/api/Ticked/tickedid/" + id + "";
+                                connString.Close();
 
-                            string uri = "http://192.168.0.102:5292/api/Ticked/tickedid/" + id + "";
-                            connString.Close();
-
-                            return Created(uri, ticked);
-                            //return Content("Prueba de insercion exitosa");
+                                return Created(uri, ticked);
+                                //return Content("Prueba de insercion exitosa");
+                            }
                         }
                         catch (Exception ex)
                         {
