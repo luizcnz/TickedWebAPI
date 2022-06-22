@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TickedWebAPI.Models
 {
-    public partial class Subcategoria
+    public partial class SubcategoriaDto
     {
+        [Key]
         public int Id { get; set; }
         public string SubcategoriaTicked { get; set; } = null!;
         public int CategoriaId { get; set; }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
-using TickedWebAPI.Models;
+using TickedWebAPI.Repositories.Aplications;
+using TickedWebAPI.Interfaces;
+using TickedWebAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,19 +11,22 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-//string connString = builder.Configuration.GetConnectionString("ConnectionString");
+builder.Services.AddScoped<IGetData, ObtenerEstados>()
+                .AddScoped<IGetData, ObtenerCategorias>()
+                .AddScoped<IGetData, ObtenerCategoriasConArray>()
+                .AddScoped<IGetData, ObtenerPrioridades>()
+                .AddScoped<IGetData, ObtenerSubcategorias>()
+                .AddScoped<IGetDataById, ObtenerSubcategoriasPorId>()
+                .AddScoped<IGetDataById, ObtenerTickedPorId>()
+                .AddScoped<IGetData, ObtenerTickeds>()
+                .AddScoped<IGetDataById, ObtenerTickedsPorIdDeUsuario>()
+                .AddScoped<IPostData, CrearTicked>();
 
 builder.Services.AddDbContext<tickedContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"));
 
 });
-
-
-//builder.Services.AddControllers()
-//            .AddJsonOptions(o => o.JsonSerializerOptions
-//                .ReferenceHandler = ReferenceHandler.Preserve);
 
 var app = builder.Build();
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using TickedWebAPI.Models;
 
-namespace TickedWebAPI.Utils
+namespace TickedWebAPI.Repositories
 {
     public static class DataCheck
     {

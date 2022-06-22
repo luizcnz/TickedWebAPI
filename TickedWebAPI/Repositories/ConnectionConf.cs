@@ -1,4 +1,6 @@
-﻿namespace TickedWebAPI.Utils
+﻿using TickedWebAPI.Interfaces;
+
+namespace TickedWebAPI.Repositories
 {
     public class ConnectionConf
     {
@@ -7,5 +9,10 @@
         public static IConfigurationRoot configuration = builder.Build();
 
         public static string conn = configuration.GetConnectionString("ConnectionString");
+        //public string GetConectionString()
+        //{
+        //    return conn;
+        //}
+
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TickedWebAPI.Models
 {
-    public class Ticked
+    public class TickedDto
     {
         public string? Numero { get; set; }
         public string? Descripcion { get; set; }
@@ -18,19 +13,15 @@ namespace TickedWebAPI.Models
         public string? Prioridad { get; set; }
         public string? Subcategoria { get; set; }
         public string? UsuarioSolicitante { get; set; }
-        public virtual ICollection<DetalleTicked>? Detalles { get; set; }
+        public virtual ICollection<DetalleTickedDto>? Detalles { get; set; }
     }
 
     public class App1TickedPost
     {
-        //Pendiente de averiguar si eliminar el campo o no
-        //[Required(ErrorMessage = "Se debe ingresar el numero del Ticked")]
-        //public string? Numero { get; set; }
 
         [Required(ErrorMessage = "Se debe dar una descripcion para el Ticked")]
         public string? Descripcion { get; set; }
 
-        //Pendiente de decidir si hacer obligatorio el campo o no
         public string? Adjunto { get; set; }
 
         [Required(ErrorMessage = "Se debe proporcionar una fecha")]

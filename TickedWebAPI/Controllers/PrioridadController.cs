@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using System.Data;
 using TickedWebAPI.Models;
-using TickedWebAPI.Utils;
+using TickedWebAPI.Services;
+using TickedWebAPI.Repositories.Aplications;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,66 +11,14 @@ namespace TickedWebAPI.Controllers
     [ApiController]
     public class PrioridadController : ControllerBase
     {
-        private readonly tickedContext context;
-        public PrioridadController(tickedContext context)
-        {
-            this.context = context;
-        }
-
-        #region obtener Prioridades
         // GET: api/<PrioridadController>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Prioridad))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetPrioridades()
+        public Response GetPrioridades()
         {
-            SqlConnection connString = new SqlConnection();
-            connString.ConnectionString = ConnectionConf.conn;
-            connString.Open();
-
-            string procedureName = "[getPrioridades]";
-            var result = new List<Prioridad>();
-
-            try
-            {
-                await using (SqlCommand command = new SqlCommand(procedureName, connString))
-                {
-                    command.CommandType = CommandType.StoredProcedure;
-                    using (SqlDataReader? reader = command.ExecuteReader())
-                    {
-                        if(reader.HasRows)
-                        {
-                            while(reader.Read())
-                            {
-                                int id = reader.GetInt32(0);
-                                string prioridad = reader.GetString(1);
-
-                                Prioridad tmp = new Prioridad()
-                                {
-                                    Id = id,
-                                    PrioridadTicked = prioridad
-                                };
-                                result.Add(tmp);
-                            }
-                            connString.Close();
-                            return new OkObjectResult(result);
-                        }
-                        else
-                        {
-                            connString.Close();
-                            return new NotFoundObjectResult("No se encotraron prioridades disponibles");
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                connString.Close();
-                Console.Write("Se han encontrado los siguientes errores: \n" + ex);
-                return new StatusCodeResult(500);
-            }
+            GetDataService solicitud = new GetDataService(new ObtenerPrioridades());
+            var valor = (OkObjectResult)solicitud.ObtenerDatos().Result;
+            
+            return new Response{Message= "Datos obtenidos exitosamente", Data = valor.Value};
         }
-        #endregion
     }
 }
