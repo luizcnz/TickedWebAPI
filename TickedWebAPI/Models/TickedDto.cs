@@ -1,22 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TickedWebAPI.Models
 {
     public class TickedDto
     {
-        public string? Numero { get; set; }
-        public string? Descripcion { get; set; }
-        public string? Adjunto { get; set; }
-        public string? Fechacreado { get; set; }
-        public string? Fechaatendido { get; set; }
-        public string? Estado { get; set; }
-        public string? Prioridad { get; set; }
-        public string? Subcategoria { get; set; }
-        public string? UsuarioSolicitante { get; set; }
-        public virtual ICollection<DetalleTickedDto>? Detalles { get; set; }
+        [Key]
+        public int? id { get; set; }
+        public string? numero { get; set; }
+        public string? descripcion { get; set; }
+        public string? adjunto { get; set; }
+        public DateTime? fechacreado { get; set; }
+        public DateTime? fechaAtendido { get; set; }
+        public string? estado { get; set; }
+        public string? prioridad { get; set; }
+        public string? subcategoria { get; set; }
+        public string? solicitante { get; set; }
+        [NotMapped]
+        public virtual object? detalles { get; set; } 
     }
 
-    public class App1TickedPost
+    public class TickedPost
     {
 
         [Required(ErrorMessage = "Se debe dar una descripcion para el Ticked")]
@@ -36,4 +40,10 @@ namespace TickedWebAPI.Models
         [Required(ErrorMessage = "Se debe ingresar el codigo del usuario solicitante")]
         public int? UsuarioSolicitanteId { get; set; }
     }
+
+    public class TickedId
+    {
+        public int id {get;set;}
+    }
 }
+

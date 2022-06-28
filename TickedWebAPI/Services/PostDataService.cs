@@ -13,7 +13,7 @@ namespace TickedWebAPI.Services
             _postData = postData;
         }
 
-        public Task<IActionResult> InsertarDatos([FromBody] App1TickedPost ticked)
+        public Task<IActionResult> InsertarDatos([FromBody] TickedPost ticked)
         {
             var res = _postData.PostData(ticked);
             return res;

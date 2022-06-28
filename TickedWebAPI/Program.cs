@@ -22,7 +22,7 @@ builder.Services.AddScoped<IGetData, ObtenerEstados>()
                 .AddScoped<IGetDataById, ObtenerTickedsPorIdDeUsuario>()
                 .AddScoped<IPostData, CrearTicked>();
 
-builder.Services.AddDbContext<tickedContext>(options =>
+builder.Services.AddDbContext<TickedContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"));
 

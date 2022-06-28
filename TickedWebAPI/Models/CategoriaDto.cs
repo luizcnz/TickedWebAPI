@@ -1,22 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using TickedWebAPI.Interfaces;
 
 namespace TickedWebAPI.Models
 {
-    public partial class CategoriaDto
+    public class CategoriaDto : IBaseModel
     {
-        [Key]
-        public int Id { get; set; }
-        public string? CategoriaTicked { get; set; } = null!;
-        public bool? EstadoCat { get; set; }
+        [Key] 
+        public int id { get; set; }
+        public string? categoria { get; set; }
+        public bool? estado_cat { get; set; }
     }
 
 
-    public partial class CategoriaSubcat
+    public class CategoriaSubcat
     {
-        [Key]
-        public int Id { get; set; }
-        public string? CategoriaTicked { get; set; } = null!;
-        public bool? EstadoCat { get; set; }
-        public ICollection<SubcategoriaDto>? Subcategoria { get; set; }
+        public int id { get; set; }
+        public string? categoria { get; set; }
+        public bool? estado_Cat { get; set; }
+        [NotMapped]
+        public object? detalles { get; set; }
     }
 }

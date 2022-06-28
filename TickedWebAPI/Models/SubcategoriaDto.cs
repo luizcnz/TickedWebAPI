@@ -2,22 +2,22 @@
 
 namespace TickedWebAPI.Models
 {
-    public partial class SubcategoriaDto
+    public class SubcategoriaDto
     {
-        [Key]
-        public int Id { get; set; }
-        public string SubcategoriaTicked { get; set; } = null!;
-        public int CategoriaId { get; set; }
-        public bool? EstadoSub { get; set; }
+        public int id { get; set; }
+        public string? subcategoria { get; set; }
+        public int? categoria_id { get; set; }
+        public bool? estado_Sub { get; set; }
 
     }
 
-    public partial class SubcategoriaJoin
+    public class SubcategoriaJoin
     {
-        public int Id { get; set; }
-        public string? Subcategoria { get; set; } = null!;
-        public string? Categoria { get; set; }
-        public bool? EstadoSub { get; set; }
+        [Key]
+        public int id { get; set; }
+        public string? subcategoria { get; set; }
+        public string? categoria { get; set; }
+        public bool? estado_Sub { get; set; }
 
     }
 }

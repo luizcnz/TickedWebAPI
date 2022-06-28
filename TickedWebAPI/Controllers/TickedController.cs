@@ -10,12 +10,17 @@ namespace TickedWebAPI.Controllers
     [ApiController]
     public class TickedController : ControllerBase
     {
+        private readonly TickedContext _tickedContext;
+        public TickedController(TickedContext tickedContext)
+        {
+            _tickedContext = tickedContext;
+        }
         #region obtener tickeds con llaves foraneas
         // GET: api/<TickedController>
         [HttpGet]
         public Response GetAllTickeds()
         {
-            GetDataService solicitud = new GetDataService(new ObtenerTickeds());
+            GetDataService solicitud = new GetDataService(new ObtenerTickeds(_tickedContext));
             //return await solicitud.ObtenerDatos();
 
             var valor = (OkObjectResult)solicitud.ObtenerDatos().Result;
@@ -30,10 +35,19 @@ namespace TickedWebAPI.Controllers
         [HttpGet("/api/Ticked/tickedid/{TkId}")]
         public Response GetTicked(int TkId)
         {
-            GetDataByIdService solicitud = new GetDataByIdService(new ObtenerTickedPorId());
+            GetDataByIdService solicitud = new GetDataByIdService(new ObtenerTickedPorId(_tickedContext));
             //return await solicitud.ObtenerDatosPorId(TkId);
             var valor = (OkObjectResult)solicitud.ObtenerDatosPorId(TkId).Result;
+            if(Convert.ToString(valor.Value) == "NoResult")
+            {
+              return new Response{Message= "No se encontraron tickeds con el id:"+TkId};  
+            }
             
+            if(Convert.ToString(valor.Value) == "Error")
+            {
+              return new Response{Message= "Hubo un error al obtener los tickeds"};  
+            }
+
             return new Response{Message= "Datos obtenidos exitosamente", Data = valor.Value};
         }
         #endregion
@@ -44,16 +58,25 @@ namespace TickedWebAPI.Controllers
         [HttpGet("/api/Ticked/userid/{UserId}")]
         public Response GetUserTickeds(int UserId)
         {
-            GetDataByIdService solicitud = new GetDataByIdService(new ObtenerTickedsPorIdDeUsuario());
+            GetDataByIdService solicitud = new GetDataByIdService(new ObtenerTickedsPorIdDeUsuario(_tickedContext));
             var valor = (OkObjectResult)solicitud.ObtenerDatosPorId(UserId).Result;
-            //var valor = (OkObjectResult)respuesta.Result;
+            if(Convert.ToString(valor.Value) == "NoResult")
+            {
+              return new Response{Message= "No se encontraron tickeds con el id de usuario:"+UserId};  
+            }
+            
+            if(Convert.ToString(valor.Value) == "Error")
+            {
+              return new Response{Message= "Hubo un error al obtener los tickeds"};  
+            }
+
             return new Response{Message= "Datos obtenidos exitosamente", Data = valor.Value};
         }
         #endregion
 
         // POST api/<TickedController>
         [HttpPost]
-        public Response Post([FromBody] App1TickedPost ticked)
+        public Response Post([FromBody] TickedPost ticked)
         {
 
             bool existePrioridad = DataCheck.VerificarExistencia("[checkPrioridad]", ticked.PrioridadId);
@@ -82,16 +105,15 @@ namespace TickedWebAPI.Controllers
             }
                 
 
-            PostDataService solicitud = new PostDataService(new CrearTicked());
-
+            PostDataService solicitud = new PostDataService(new CrearTicked(_tickedContext));
             var valor = (OkObjectResult)solicitud.InsertarDatos(ticked).Result;
              
-            if(valor.Value == null)
+            if(Convert.ToString(valor.Value) == "Error")
             {
               return new Response{Message= "Hubo un error al guardar el ticked"};  
             }
 
-            return new Response{Message= "Ticked creado exitosamente", Data = valor.Value};
+            return new Response{Message= "Ticked creado exitosamente http://192.168.0.111:5292/api/Ticked/tickedid/" + valor.Value, Data = ticked};
 
         }
 

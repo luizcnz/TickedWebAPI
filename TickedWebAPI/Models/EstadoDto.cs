@@ -4,8 +4,7 @@ namespace TickedWebAPI.Models
 {
     public class EstadoDto
     {
-        [Key]
-        public int Id { get; set; }
-        public string? EstadoTicked { get; set; }
+        public int id { get; set; }
+        public string? estado { get; set; }
     }
 }

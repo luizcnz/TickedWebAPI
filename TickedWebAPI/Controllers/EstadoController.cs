@@ -17,14 +17,29 @@ namespace TickedWebAPI.Controllers
     public class EstadoController : ControllerBase
     {
 
+        private readonly TickedContext _tickedContext;
+        public EstadoController(TickedContext tickedContext)
+        {
+            _tickedContext = tickedContext;
+        }
+
         #region obtener estados
         // GET: api/<EstadoControllerController>
         [HttpGet]
         public Response GetEstados()
         {
-            GetDataService solicitud = new GetDataService(new ObtenerEstados(new SqlConnection()));
+            GetDataService solicitud = new GetDataService(new ObtenerEstados(_tickedContext));
             var valor = (OkObjectResult)solicitud.ObtenerDatos().Result;
-            return new Response{Message= "Datos obtenidos exitosamente", Data = valor.Value};
+            
+            if (Convert.ToString(valor.Value) == "NoResult")
+            {
+                return new Response { Message = "No se encontraron datos" };
+            }
+            if (valor.Value == null)
+            {
+                return new Response { Message = "Hubo un error al obtener los datos" };
+            }
+            return new Response { Message = "Datos obtenidos exitosamente", Data = valor.Value };
         }
         #endregion
     }

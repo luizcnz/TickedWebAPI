@@ -5,7 +5,7 @@ namespace TickedWebAPI.Interfaces
 {
     public interface IPostData
     {
-        public Task<IActionResult> PostData([FromBody] App1TickedPost ticked);
+        public Task<IActionResult> PostData([FromBody] TickedPost ticked);
         
     }
 }

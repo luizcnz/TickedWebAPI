@@ -1,19 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TickedWebAPI.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using TickedWebAPI.Models;
+using TickedWebAPI.Models.Entities;
 
 namespace TickedWebAPI.Repositories
 {
-    public partial class tickedContext : DbContext
+    public class TickedContext : DbContext
     {
-        public tickedContext(DbContextOptions<tickedContext> options)
+        
+        public TickedContext(DbContextOptions<TickedContext> options)
             : base(options)
         {
         }
 
-        public DbSet<CategoriaDto> App1Categoria { get; set; } = null!;
-        public DbSet<SubcategoriaDto> App1Subcategoria { get; set; } = null!;
-        public DbSet<TickedDto> App1Tickeds { get; set; } = null!;
-        public DbSet<EstadoDto> App1Estado { get; set; } = null!;
+
+        public DbSet<CategoriaDto> Categorias { get; set; }
+        public DbSet<CategoriaSubcat> CategoriasySubcat { get; set; }
+        public DbSet<DetalleTickedDto> DetalleTickeds { get; set; }
+        public DbSet<EstadoDto> Estados { get; set; }
+        public DbSet<PrioridadDto> Prioridades { get; set; }
+        public DbSet<SubcategoriaJoin> Subcategorias { get; set; }
+        public DbSet<TickedDto> Tickeds { get; set; }
+        public DbSet<TickedId> TickedsId { get; set; }
     }
 }
