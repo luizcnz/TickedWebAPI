@@ -27,9 +27,7 @@ namespace TickedWebAPI.Repositories
             {
                 return null;
             }
-            IEnumerable<SubcategoriaConInnerJoinDto> subcat = mapper.Map<IEnumerable<SubcategoriaConInnerJoinDto>>(result);
-
-            return subcat;
+            return mapper.Map<IEnumerable<SubcategoriaConInnerJoinDto>>(result);
         }
 
         public async Task<IEnumerable<SubcategoriaConInnerJoinDto>> GetAllSubcategoriasByCategoriaId(int CatId)
@@ -41,9 +39,7 @@ namespace TickedWebAPI.Repositories
             {
                 return null;
             }
-            IEnumerable<SubcategoriaConInnerJoinDto> subcat = mapper.Map<IEnumerable<SubcategoriaConInnerJoinDto>>(result);
-
-            return subcat;
+            return mapper.Map<IEnumerable<SubcategoriaConInnerJoinDto>>(result);
 
         }
     }

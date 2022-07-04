@@ -16,7 +16,7 @@ namespace TickedWebAPI.Features.Tickeds
 
         public async Task<Response> GetAllTickedsWithDetails()
         {
-            var allTickeds = await tickedRepository.GetAllTickedsWithDetail();
+            var allTickeds = await tickedRepository.GetAllTickedsWithDetails();
 
             return new Response
             {
@@ -26,7 +26,7 @@ namespace TickedWebAPI.Features.Tickeds
 
         public async Task<Response> GetAllTickedsByUserIdWithDetails(int UserId)
         {
-            IEnumerable<TickedDto> allTickedByUser = await tickedRepository.GetAllTickedsWithDetailByUserId(UserId);
+            IEnumerable<TickedDto> allTickedByUser = await tickedRepository.GetAllTickedsByUserIdWithDetails(UserId);
 
             return new Response
             {
@@ -36,7 +36,7 @@ namespace TickedWebAPI.Features.Tickeds
 
         public async Task<Response> GetTickedByIdWithDetails(int TickedId)
         {
-            IEnumerable<TickedDto> TicketById = await tickedRepository.GetTickedWithDetailById(TickedId);
+            IEnumerable<TickedDto> TicketById = await tickedRepository.GetTickedByIdWithDetails(TickedId);
 
             return new Response
             {

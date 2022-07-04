@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TickedWebAPI.Models;
 using TickedWebAPI.Models.Entities;
 
 namespace TickedWebAPI.Repositories
@@ -21,6 +20,6 @@ namespace TickedWebAPI.Repositories
         public DbSet<SubcategoriaModel> Subcategorias { get; set; } = null!;
         public DbSet<SubcategoriaConInnerJoinModel> SubcategoriasConInnerJoin { get; set; } = null!;
         public DbSet<TickedModel> Tickeds { get; set; } = null!;
-        public DbSet<DataId> DataId { get; set; } = null!;
+        public DbSet<UsuarioModel> Usuarios { get; set; } = null!;
     }
 }

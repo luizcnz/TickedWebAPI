@@ -27,9 +27,7 @@ namespace TickedWebAPI.Repositories
             {
                 return null;;
             }
-            IEnumerable<EstadoDto> estados = mapper.Map<IEnumerable<EstadoDto>>(result);
-
-            return estados;
+            return mapper.Map<IEnumerable<EstadoDto>>(result);
 
         }
 
