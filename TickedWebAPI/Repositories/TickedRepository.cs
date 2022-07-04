@@ -17,7 +17,7 @@ namespace TickedWebAPI.Repositories
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<TickedDto>> GetAllTickedsWithDetail()
+        public async Task<IEnumerable<TickedDto>> GetAllTickedsWithDetails()
         {
             string procedureName = "dbo.GetTickeds";
             string procedureName2 = "dbo.GetTickedDetails";
@@ -31,12 +31,10 @@ namespace TickedWebAPI.Repositories
             {
                 ticked.detalles = await tickedContext.DetalleTickeds.FromSqlRaw("exec {0} @Id = {1}", procedureName2, ticked.id).ToListAsync();
             }
-            IEnumerable<TickedDto> tickedDto = mapper.Map<IEnumerable<TickedDto>>(result);
-
-            return tickedDto;
+            return mapper.Map<IEnumerable<TickedDto>>(result);
         }
 
-        public async Task<IEnumerable<TickedDto>> GetAllTickedsWithDetailByUserId(int UserId)
+        public async Task<IEnumerable<TickedDto>> GetAllTickedsByUserIdWithDetails(int UserId)
         {
             string procedureName = "dbo.GetTickedsByUserId";
             string procedureName2 = "dbo.GetTickedDetails";
@@ -52,13 +50,11 @@ namespace TickedWebAPI.Repositories
                 ticked.detalles = await tickedContext.DetalleTickeds.FromSqlRaw("exec {0} @Id = {1}", procedureName2, ticked.id).ToListAsync();
             }
 
-            IEnumerable<TickedDto> tickedDto = mapper.Map<IEnumerable<TickedDto>>(result);
-
-            return tickedDto;
+            return mapper.Map<IEnumerable<TickedDto>>(result);
 
         }
 
-        public async Task<IEnumerable<TickedDto>> GetTickedWithDetailById(int TickedId)
+        public async Task<IEnumerable<TickedDto>> GetTickedByIdWithDetails(int TickedId)
         {
             string procedureName = "dbo.GetTickedsById";
             string procedureName2 = "dbo.GetTickedDetails";
@@ -73,9 +69,7 @@ namespace TickedWebAPI.Repositories
             {
                 ticked.detalles = await tickedContext.DetalleTickeds.FromSqlRaw("exec {0} @Id = {1}", procedureName2, ticked.id).ToListAsync();
             }
-            IEnumerable<TickedDto> tickedDto = mapper.Map<IEnumerable<TickedDto>>(result);
-
-            return tickedDto;
+            return mapper.Map<IEnumerable<TickedDto>>(result);
 
         }
 
@@ -95,8 +89,7 @@ namespace TickedWebAPI.Repositories
                 .ToListAsync();
                 tickedContext.SaveChanges();
 
-            IEnumerable<TickedDto> tickedDto = mapper.Map<IEnumerable<TickedDto>>(result);
-            return tickedDto;
+            return mapper.Map<IEnumerable<TickedDto>>(result);
         }
 
 

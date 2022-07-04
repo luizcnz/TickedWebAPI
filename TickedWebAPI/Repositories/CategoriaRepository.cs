@@ -31,9 +31,7 @@ namespace TickedWebAPI.Repositories
             {
                 return null;
             }
-            IEnumerable<CategoriaDto> categorias = mapper.Map<IEnumerable<CategoriaDto>>(result);
-
-            return categorias;
+            return mapper.Map<IEnumerable<CategoriaDto>>(result);
         }
 
         public async Task<IEnumerable<CategoriaConSubcategoriasDto>> GetAllCategoriasWithSubcategorias()
@@ -50,9 +48,7 @@ namespace TickedWebAPI.Repositories
             {
                 c.detalles = await tickedContext.Subcategorias.FromSqlRaw("exec {0} @Id = {1}", procedureName2, c.id).ToListAsync();
             }
-            IEnumerable<CategoriaConSubcategoriasDto> catSubcat = mapper.Map<IEnumerable<CategoriaConSubcategoriasDto>>(result);
-
-            return catSubcat;
+            return mapper.Map<IEnumerable<CategoriaConSubcategoriasDto>>(result);
         }
     }
 }

@@ -5,13 +5,13 @@ namespace TickedWebAPI.Interfaces.Tickeds
 {
     public interface ITickedRepository
     {
-        Task<IEnumerable<TickedDto>> GetAllTickedsWithDetail();
+        Task<IEnumerable<TickedDto>> GetAllTickedsWithDetails();
 
 
-        Task<IEnumerable<TickedDto>> GetAllTickedsWithDetailByUserId(int UserId);
+        Task<IEnumerable<TickedDto>> GetAllTickedsByUserIdWithDetails(int UserId);
 
 
-        Task<IEnumerable<TickedDto>> GetTickedWithDetailById(int TickedId);
+        Task<IEnumerable<TickedDto>> GetTickedByIdWithDetails(int TickedId);
 
 
         Task<IEnumerable<TickedDto>> CreateTicked(CrearTickedDto ticked);

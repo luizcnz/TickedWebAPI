@@ -26,10 +26,7 @@ namespace TickedWebAPI.Repositories
             {
                 return null;
             }
-            IEnumerable<PrioridadDto> prioridades = mapper.Map<IEnumerable<PrioridadDto>>(result);
-
-            return prioridades;
-
+            return mapper.Map<IEnumerable<PrioridadDto>>(result);
         }
     }
 }
