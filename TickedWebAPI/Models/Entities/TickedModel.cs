@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TickedWebAPI.Models
+namespace TickedWebAPI.Models.Entities
 {
-    public class TickedDto
+    public class TickedModel
     {
         [Key]
         public int? id { get; set; }
@@ -17,10 +17,10 @@ namespace TickedWebAPI.Models
         public string? subcategoria { get; set; }
         public string? solicitante { get; set; }
         [NotMapped]
-        public virtual object? detalles { get; set; } 
+        public virtual object? detalles { get; set; }
     }
 
-    public class CrearTickedDto
+    public class CrearTickedModel
     {
         public string? Descripcion { get; set; }
         public string? Adjunto { get; set; }
@@ -30,4 +30,3 @@ namespace TickedWebAPI.Models
         public int UsuarioSolicitanteId { get; set; }
     }
 }
-

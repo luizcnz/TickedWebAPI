@@ -1,19 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TickedWebAPI.Interfaces;
 
-namespace TickedWebAPI.Models
+namespace TickedWebAPI.Models.Entities
 {
-    public class CategoriaDto
+    public class CategoriaModel
     {
-        [Key] 
+        [Key]
         public int id { get; set; }
         public string? categoria { get; set; }
         public bool? estado_cat { get; set; }
     }
 
 
-    public class CategoriaConSubcategoriasDto
+    public class CategoriaConSubcategoriasModel
     {
         public int id { get; set; }
         public string? categoria { get; set; }

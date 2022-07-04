@@ -13,13 +13,14 @@ namespace TickedWebAPI.Repositories
         }
 
 
-        public DbSet<CategoriaDto> Categorias { get; set; }
-        public DbSet<CategoriaSubcat> CategoriasySubcat { get; set; }
-        public DbSet<DetalleTickedDto> DetalleTickeds { get; set; }
-        public DbSet<EstadoDto> Estados { get; set; }
-        public DbSet<PrioridadDto> Prioridades { get; set; }
-        public DbSet<SubcategoriaJoin> Subcategorias { get; set; }
-        public DbSet<TickedDto> Tickeds { get; set; }
-        public DbSet<TickedId> TickedsId { get; set; }
+        public DbSet<CategoriaModel> Categorias { get; set; } = null!;
+        public DbSet<CategoriaConSubcategoriasModel> CategoriasConSubcategorias { get; set; } = null!;
+        public DbSet<DetalleTickedModel> DetalleTickeds { get; set; } = null!;
+        public DbSet<EstadoModel> Estados { get; set; } = null!;
+        public DbSet<PrioridadModel> Prioridades { get; set; } = null!;
+        public DbSet<SubcategoriaModel> Subcategorias { get; set; } = null!;
+        public DbSet<SubcategoriaConInnerJoinModel> SubcategoriasConInnerJoin { get; set; } = null!;
+        public DbSet<TickedModel> Tickeds { get; set; } = null!;
+        public DbSet<DataId> DataId { get; set; } = null!;
     }
 }

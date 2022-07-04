@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TickedWebAPI.Models
+namespace TickedWebAPI.Models.Entities
 {
-    public class SubcategoriaDto
+    public class SubcategoriaModel
     {
+        [Key]
         public int id { get; set; }
         public string? subcategoria { get; set; }
         public int? categoria_id { get; set; }
@@ -11,7 +13,7 @@ namespace TickedWebAPI.Models
 
     }
 
-    public class SubcategoriaConInnerJoinDto
+    public class SubcategoriaConInnerJoinModel
     {
         [Key]
         public int id { get; set; }
