@@ -12,7 +12,6 @@ namespace TickedWebAPI.Models
         public bool? estado_cat { get; set; }
     }
 
-
     public class CategoriaConSubcategoriasDto
     {
         public int id { get; set; }

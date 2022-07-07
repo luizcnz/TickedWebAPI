@@ -19,7 +19,6 @@ namespace TickedWebAPI.Models.Entities
         [NotMapped]
         public virtual object? detalles { get; set; }
     }
-
     public class CrearTickedModel
     {
         public string? Descripcion { get; set; }

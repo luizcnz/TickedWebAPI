@@ -38,7 +38,7 @@ builder.Services.AddScoped<ITickedAppService, TickedAppService>()
                 .AddScoped<IPrioridadRepository, PrioridadRepository>()
                 .AddScoped<ISubcategoriaAppService, SubcategoriaAppService>()
                 .AddScoped<ISubcategoriaRepository, SubcategoriaRepository>()
-                .AddScoped<ITickedDataVerify, TickedDataVerify>()
+                .AddScoped<ITickedPostVerify, TickedPostVerify>()
                 .AddSingleton(mapper)
                 .AddMvc();
 

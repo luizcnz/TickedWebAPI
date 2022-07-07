@@ -10,6 +10,5 @@ namespace TickedWebAPI.Models.Entities
         public string? comentario { get; set; }
         public string? usuario { get; set; }
         public string? adjunto { get; set; }
-
     }
 }

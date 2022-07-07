@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TickedWebAPI.Interfaces.Categorias;
@@ -14,7 +10,6 @@ namespace TickedWebAPI.Repositories
     {
         private readonly TickedContext tickedContext;
         private readonly IMapper mapper;
-
         public CategoriaRepository(TickedContext tickedContext, IMapper mapper)
         {
             this.tickedContext = tickedContext;
@@ -24,9 +19,8 @@ namespace TickedWebAPI.Repositories
         public async Task<IEnumerable<CategoriaDto>> GetAllCategorias()
         {
             string procedureName = "dbo.GetCategorias";
-
+            
             var result = await tickedContext.Categorias.FromSqlRaw("exec {0}", procedureName).ToListAsync();
-
             if (result.Count == 0)
             {
                 return null;
@@ -37,8 +31,7 @@ namespace TickedWebAPI.Repositories
         public async Task<IEnumerable<CategoriaConSubcategoriasDto>> GetAllCategoriasWithSubcategorias()
         {
             string procedureName = "dbo.GetCategorias";
-            string procedureName2 = "dbo.GetCategoriaDetalles";
-
+            string procedureName2 = "dbo.GetCategoriaDetails";
             var result = await tickedContext.CategoriasConSubcategorias.FromSqlRaw("exec {0}", procedureName).ToListAsync();
             if (result.Count == 0)
             {

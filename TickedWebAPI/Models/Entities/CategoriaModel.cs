@@ -10,8 +10,6 @@ namespace TickedWebAPI.Models.Entities
         public string? categoria { get; set; }
         public bool? estado_cat { get; set; }
     }
-
-
     public class CategoriaConSubcategoriasModel
     {
         public int id { get; set; }

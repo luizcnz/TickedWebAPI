@@ -19,7 +19,6 @@ namespace TickedWebAPI.Models
         [NotMapped]
         public virtual object? detalles { get; set; } 
     }
-
     public class CrearTickedDto
     {
         public string? Descripcion { get; set; }

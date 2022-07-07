@@ -10,7 +10,6 @@ namespace TickedWebAPI.Repositories
     {
         private readonly TickedContext tickedContext;
         private readonly IMapper mapper;
-
         public SubcategoriaRepository(TickedContext tickedContext, IMapper mapper)
         {
             this.tickedContext = tickedContext;
@@ -20,9 +19,7 @@ namespace TickedWebAPI.Repositories
         public async Task<IEnumerable<SubcategoriaConInnerJoinDto>> GetAllSubcategorias()
         {
             string procedureName = "dbo.GetSubcategorias";
-
             var result = await tickedContext.SubcategoriasConInnerJoin.FromSqlRaw("EXECUTE {0}", procedureName).ToListAsync();
-
             if (result.Count == 0)
             {
                 return null;
@@ -32,9 +29,8 @@ namespace TickedWebAPI.Repositories
 
         public async Task<IEnumerable<SubcategoriaConInnerJoinDto>> GetAllSubcategoriasByCategoriaId(int CatId)
         {
-            string procedureName = "dbo.GetSubcategoriasById";
+            string procedureName = "dbo.GetSubcategoriasByCategoriaId";
             var result = await tickedContext.SubcategoriasConInnerJoin.FromSqlRaw("EXECUTE {0} @Id = {1}", procedureName, CatId).ToListAsync();
-
             if (result.Count == 0)
             {
                 return null;

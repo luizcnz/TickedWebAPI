@@ -10,9 +10,7 @@ namespace TickedWebAPI.Models.Entities
         public string? subcategoria { get; set; }
         public int? categoria_id { get; set; }
         public bool? estado_Sub { get; set; }
-
     }
-
     public class SubcategoriaConInnerJoinModel
     {
         [Key]

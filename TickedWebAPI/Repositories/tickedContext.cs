@@ -4,13 +4,11 @@ using TickedWebAPI.Models.Entities;
 namespace TickedWebAPI.Repositories
 {
     public class TickedContext : DbContext
-    {
-        
+    {        
         public TickedContext(DbContextOptions<TickedContext> options)
             : base(options)
         {
         }
-
 
         public DbSet<CategoriaModel> Categorias { get; set; } = null!;
         public DbSet<CategoriaConSubcategoriasModel> CategoriasConSubcategorias { get; set; } = null!;

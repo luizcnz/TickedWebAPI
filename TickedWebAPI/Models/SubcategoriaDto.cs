@@ -10,7 +10,6 @@ namespace TickedWebAPI.Models
         public bool? estado_Sub { get; set; }
 
     }
-
     public class SubcategoriaConInnerJoinDto
     {
         [Key]
@@ -18,6 +17,5 @@ namespace TickedWebAPI.Models
         public string? subcategoria { get; set; }
         public string? categoria { get; set; }
         public bool? estado_Sub { get; set; }
-
     }
 }

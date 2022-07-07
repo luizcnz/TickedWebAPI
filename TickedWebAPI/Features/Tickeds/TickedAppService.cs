@@ -6,9 +6,9 @@ namespace TickedWebAPI.Features.Tickeds
     public class TickedAppService : ITickedAppService
     {
         private readonly ITickedRepository tickedRepository;
-        private readonly ITickedDataVerify tickedDataVerify;
+        private readonly ITickedPostVerify tickedDataVerify;
 
-        public TickedAppService(ITickedRepository tickedRepository, ITickedDataVerify tickedDataVerify)
+        public TickedAppService(ITickedRepository tickedRepository, ITickedPostVerify tickedDataVerify)
         {
             this.tickedRepository = tickedRepository;
             this.tickedDataVerify = tickedDataVerify;
@@ -24,9 +24,9 @@ namespace TickedWebAPI.Features.Tickeds
             };
         }
 
-        public async Task<Response> GetAllTickedsByUserIdWithDetails(int UserId)
+        public async Task<Response> GetAllTickedsWithDetailsByUserId(int UserId)
         {
-            IEnumerable<TickedDto> allTickedByUser = await tickedRepository.GetAllTickedsByUserIdWithDetails(UserId);
+            IEnumerable<TickedDto> allTickedByUser = await tickedRepository.GetAllTickedsWithDetailsByUserId(UserId);
 
             return new Response
             {
@@ -34,9 +34,9 @@ namespace TickedWebAPI.Features.Tickeds
             };
         }
 
-        public async Task<Response> GetTickedByIdWithDetails(int TickedId)
+        public async Task<Response> GetTickedWithDetailsById(int TickedId)
         {
-            IEnumerable<TickedDto> TicketById = await tickedRepository.GetTickedByIdWithDetails(TickedId);
+            IEnumerable<TickedDto> TicketById = await tickedRepository.GetTickedWithDetailsById(TickedId);
 
             return new Response
             {

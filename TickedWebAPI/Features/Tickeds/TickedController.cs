@@ -28,14 +28,14 @@ namespace TickedWebAPI.Features.Tickeds
         [HttpGet("/api/Ticked/userid/{UserId}")]
         public async Task<IActionResult> GetTickedsWithDetailsByUserId(int UserId)
         {
-            return Ok(await tickedAppService.GetAllTickedsByUserIdWithDetails(UserId));
+            return Ok(await tickedAppService.GetAllTickedsWithDetailsByUserId(UserId));
         }
 
         // GET: api/<TickedController>
         [HttpGet("/api/Ticked/tickedid/{TickedId}")]
         public async Task<IActionResult> GetTickedWithDetailsById(int TickedId)
         {
-            return Ok(await tickedAppService.GetTickedByIdWithDetails(TickedId));
+            return Ok(await tickedAppService.GetTickedWithDetailsById(TickedId));
         }
 
         // POST api/<TickedController>

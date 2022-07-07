@@ -1,5 +1,6 @@
 ﻿using TickedWebAPI.Interfaces.Estados;
 using TickedWebAPI.Models;
+using TickedWebAPI.Repositories;
 
 namespace TickedWebAPI.Features.Estados
 {
