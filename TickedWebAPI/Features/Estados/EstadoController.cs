@@ -9,9 +9,9 @@ namespace TickedWebAPI.Features.Estados
     [ApiController]
     public class EstadoController : ControllerBase
     {
-        private readonly IEstadoAppService estadoAppService;
+        private readonly EstadoAppService estadoAppService;
 
-        public EstadoController(IEstadoAppService estadoAppService)
+        public EstadoController(EstadoAppService estadoAppService)
         {
             this.estadoAppService = estadoAppService;
         }
