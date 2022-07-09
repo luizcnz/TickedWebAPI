@@ -6,9 +6,9 @@ namespace TickedWebAPI.Features.Estados
 {
     public class EstadoAppService : IEstadoAppService
     {
-        private readonly EstadoRepository estadoRepository;
+        private readonly IEstadoRepository estadoRepository;
 
-        public EstadoAppService(EstadoRepository estadoRepository)
+        public EstadoAppService(IEstadoRepository estadoRepository)
         {
             this.estadoRepository = estadoRepository;
         }
